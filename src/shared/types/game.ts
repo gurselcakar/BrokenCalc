@@ -1,13 +1,6 @@
-type Response<T> = { status: 'error'; message: string } | ({ status: 'success' } & T);
+// Basic response type for API calls
+export type ApiResponse<T> = 
+  | { status: 'success' } & T
+  | { status: 'error'; message: string };
 
-export type LetterState = 'initial' | 'correct' | 'present' | 'absent';
-
-export type CheckResponse = Response<{
-  exists?: boolean;
-  solved: boolean;
-  correct: [LetterState, LetterState, LetterState, LetterState, LetterState];
-}>;
-
-export type InitResponse = Response<{
-  postId: string;
-}>;
+// Add BrokenCalc specific types here as needed
