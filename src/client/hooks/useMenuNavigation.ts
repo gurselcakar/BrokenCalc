@@ -189,10 +189,10 @@ export const useMenuNavigation = () => {
           };
         }
       } else if (prev.currentScreen === 'DIFFICULTY_SELECTION' && prev.selectedDifficulty) {
-        screenHistoryRef.current = [...screenHistoryRef.current, 'COMING_SOON'];
+        screenHistoryRef.current = [...screenHistoryRef.current, 'GAME'];
         return {
           ...prev,
-          currentScreen: 'COMING_SOON',
+          currentScreen: 'GAME',
           showBackButton: true,
           isTransitioning: true,
           scrollPosition: 0,

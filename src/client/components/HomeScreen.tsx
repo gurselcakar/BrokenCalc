@@ -3,7 +3,6 @@ import { CalculatorDisplay } from './CalculatorDisplay';
 import { MenuNavigation } from './MenuNavigation';
 import { WelcomeSequence } from './WelcomeSequence';
 import { DifficultySelection } from './DifficultySelection';
-import { ComingSoon } from './ComingSoon';
 import { HowToPlay } from './HowToPlay';
 import { Leaderboard } from './Leaderboard';
 import { GameDisplay } from './GameDisplay';
@@ -55,19 +54,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     disabled: !gameLogicResult.gameState || gameLogicResult.gameState.gameStatus !== 'playing',
   });
 
-  // Start game sequence
-  const startGame = () => {
-    actions.setScreen('GAME');
-    setShowGameStart(true);
-    setGameStarted(false);
-    
-    // Show "GAME START" message for 2 seconds
-    setTimeout(() => {
-      setShowGameStart(false);
-      gameLogicResult.initializeGame();
-      setGameStarted(true);
-    }, 2000);
-  };
+
 
   // Initialize welcome sequence on mount
   useEffect(() => {
@@ -88,6 +75,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
   useEffect(() => {
     setWelcomeState(prev => ({ ...prev, username: username || null }));
   }, [username]);
+
+  // Initialize game when GAME screen is shown
+  useEffect(() => {
+    if (state.currentScreen === 'GAME' && !gameLogicResult.isInitialized) {
+      setShowGameStart(true);
+      setGameStarted(false);
+      
+      // Show "GAME START" message for 2 seconds
+      const timer = setTimeout(() => {
+        setShowGameStart(false);
+        gameLogicResult.initializeGame();
+        setGameStarted(true);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [state.currentScreen, gameLogicResult.isInitialized, gameLogicResult]);
 
   const renderMainMenu = () => (
     <div>
@@ -110,14 +114,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     </div>
   );
 
-  const handleBackToHome = () => {
-    // Reset to main menu
-    actions.back();
-    // Reset game state
-    setShowGameStart(false);
-    setGameStarted(false);
-    gameLogicResult.resetGame();
-  };
+
 
   // Handle button press during game
   const handleGameButtonPress = (buttonId: string) => {
@@ -154,8 +151,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       ...gameLogicResult.gameState,
       userInput: calculatorResult.userInput,
       calculatorDisplay: calculatorResult.display,
-      ...(calculatorResult.lastResult !== undefined && { lastResult: calculatorResult.lastResult }),
+      showResult: calculatorResult.showResult,
     };
+
+    // Explicitly set lastResult if it exists
+    if (calculatorResult.lastResult !== undefined) {
+      enhancedGameState.lastResult = calculatorResult.lastResult;
+    }
+
+
 
     return <GameDisplay gameState={enhancedGameState} />;
   };
@@ -171,15 +175,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       case 'DIFFICULTY_SELECTION':
         return <DifficultySelection selectedDifficulty={state.selectedDifficulty} />;
       
-      case 'COMING_SOON':
-        return (
-          <ComingSoon 
-            selectedDifficulty={state.selectedDifficulty} 
-            onBackToHome={handleBackToHome}
-            onStartGame={startGame}
-          />
-        );
-
       case 'GAME':
         return showGameStart ? renderGameStartMessage() : renderGameInterface();
       
@@ -228,7 +223,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
         {renderCurrentScreen()}
         
         {/* Navigation Buttons - Hidden during welcome and game screens */}
-        {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'COMING_SOON' && state.currentScreen !== 'GAME' && (
+        {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME' && (
           <MenuNavigation
             state={state}
             inputMethod={inputMethod}

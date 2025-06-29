@@ -24,12 +24,9 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
 
   // Determine what to show in the input area (bottom-right)
   const getInputDisplay = () => {
-    // If we have a calculated result, show it with equals sign
-    if (gameState.lastResult !== undefined) {
+    if (gameState.showResult && gameState.lastResult !== undefined) {
       return `= ${gameState.lastResult}`;
     }
-    
-    // Otherwise show the equation being built
     return formatUserInput(gameState.userInput);
   };
 
@@ -39,8 +36,8 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
       return 'CORRECT!';
     }
     
-    // Show "INCORRECT" if we have a result that doesn't match the target
-    if (gameState.lastResult !== undefined) {
+    // Show "INCORRECT" if we have a result that doesn't match the target and we're showing the result
+    if (gameState.showResult && gameState.lastResult !== undefined) {
       const isCorrect = Math.abs(gameState.lastResult - gameState.problem.targetValue) < 0.001;
       if (!isCorrect) {
         return 'INCORRECT';

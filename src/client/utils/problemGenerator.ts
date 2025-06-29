@@ -281,9 +281,46 @@ export const validateEquation = (equation: string, targetValue: number): boolean
   try {
     // Parse and evaluate the equation
     const result = evaluateEquation(equation);
-    return Math.abs(result - targetValue) < 0.001; // Handle floating point precision
+    const isValid = Math.abs(result - targetValue) < 0.001; // Handle floating point precision
+    console.log('🔍 Validation check:', { equation, result, targetValue, isValid });
+    return isValid;
   } catch (error) {
+    console.error('❌ Validation error:', error);
     return false;
+  }
+};
+
+/**
+ * Simple and safe basic math evaluator for validation
+ */
+const evaluateBasicMathForValidation = (expression: string): number => {
+  // Handle simple two-operand expressions like "6-4", "3+5", "2*7", "8/2"
+  const match = expression.match(/^(\d+(?:\.\d+)?)\s*([+\-*/])\s*(\d+(?:\.\d+)?)$/);
+  
+  if (!match) {
+    throw new Error('Invalid expression format');
+  }
+  
+  const [, leftStr, operator, rightStr] = match;
+  if (!leftStr || !operator || !rightStr) {
+    throw new Error('Failed to parse expression components');
+  }
+  
+  const left = parseFloat(leftStr);
+  const right = parseFloat(rightStr);
+  
+  switch (operator) {
+    case '+':
+      return left + right;
+    case '-':
+      return left - right;
+    case '*':
+      return left * right;
+    case '/':
+      if (right === 0) throw new Error('Division by zero');
+      return left / right;
+    default:
+      throw new Error('Unsupported operator');
   }
 };
 
@@ -300,16 +337,8 @@ const evaluateEquation = (equation: string): number => {
   }
   
   // Replace × and ÷ with * and /
-  const jsEquation = cleaned.replace(/×/g, '*').replace(/÷/g, '/');
+  const jsExpression = cleaned.replace(/×/g, '*').replace(/÷/g, '/');
   
-  // Use Function constructor for safe evaluation (better than eval)
-  try {
-    const result = new Function(`return ${jsEquation}`)();
-    if (typeof result !== 'number' || !isFinite(result)) {
-      throw new Error('Invalid result');
-    }
-    return result;
-  } catch (error) {
-    throw new Error('Failed to evaluate equation');
-  }
+  // Use our safe math evaluator instead of Function constructor
+  return evaluateBasicMathForValidation(jsExpression);
 };

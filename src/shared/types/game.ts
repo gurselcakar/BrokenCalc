@@ -21,6 +21,7 @@ export interface GameState {
   finalScore?: number; // Set when game ends (remaining seconds)
   userInput: string; // Current equation being built
   lastResult?: number; // Last calculated result
+  showResult?: boolean; // Whether to show calculated result
 }
 
 // Math problem structure

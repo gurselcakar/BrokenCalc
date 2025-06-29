@@ -7,8 +7,7 @@ export type MenuOption = 'PLAY' | 'HOW TO PLAY' | 'LEADERBOARD';
 export type ScreenState = 
   | 'WELCOME' 
   | 'MAIN_MENU' 
-  | 'DIFFICULTY_SELECTION' 
-  | 'COMING_SOON' 
+    | 'DIFFICULTY_SELECTION' 
   | 'GAME'
   | 'HOW_TO_PLAY' 
   | 'LEADERBOARD';
