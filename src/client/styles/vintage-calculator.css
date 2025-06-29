@@ -181,9 +181,10 @@
   padding: 20px 24px;
   padding-right: 80px;
   margin-bottom: 16px;
-  min-height: 100px;
-  max-height: 250px;
-  flex-shrink: 1;
+  min-height: 180px;
+  max-height: 350px;
+  flex: 1;
+  flex-shrink: 0;
   position: relative;
   box-shadow: 
     inset 0 0 20px rgba(0, 0, 0, 0.5),
@@ -352,11 +353,12 @@
 /* Calculator Grid - integrated into main calculator */
 /* Calculator Buttons Area */
 .calculator-buttons-area {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   padding: 0;
-  min-height: 0;
+  min-height: 280px;
+  max-height: 320px;
 }
 
 .calculator-grid {
@@ -365,10 +367,10 @@
   grid-template-rows: repeat(5, 1fr);
   gap: 8px;
   width: 100%;
-  flex: 1;
+  height: 100%;
   margin: 0 auto;
   padding: 0;
-  min-height: 0;
+  aspect-ratio: 4/5;
 }
 
 /* Calculator Button Base Styles */
@@ -378,7 +380,7 @@
   border-radius: 8px;
   color: var(--calc-btn-text);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -389,7 +391,9 @@
   box-shadow: 
     0 4px 8px var(--calc-btn-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  min-height: 60px;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
 }
 
 .calc-button:hover {
@@ -435,6 +439,11 @@
 
 .calc-button-action:hover {
   background: var(--calc-btn-action-hover);
+}
+
+/* Delete button exception - spans 3 columns but maintains row height */
+.calc-button[style*="span 3"] {
+  aspect-ratio: 3/1;
 }
 
 /* Disabled Button Styles */
@@ -506,8 +515,8 @@
   .lcd-display {
     padding: 16px 20px;
     padding-right: 60px;
-    min-height: 120px;
-    max-height: 180px;
+    min-height: 160px;
+    max-height: 280px;
     margin-bottom: 12px;
   }
   
@@ -529,9 +538,13 @@
     font-size: 1.8rem;
   }
   
+  .calculator-buttons-area {
+    min-height: 240px;
+    max-height: 280px;
+  }
+  
   .calc-button {
-    font-size: 1.3rem;
-    min-height: 45px;
+    font-size: 1.1rem;
   }
   
   .calculator-grid {
@@ -571,8 +584,8 @@
   .lcd-display {
     padding: 20px 16px;
     padding-right: 70px;
-    min-height: 100px;
-    max-height: 160px;
+    min-height: 140px;
+    max-height: 240px;
     margin-bottom: 12px;
   }
   
@@ -594,9 +607,13 @@
     font-size: 1.5rem;
   }
   
+  .calculator-buttons-area {
+    min-height: 200px;
+    max-height: 240px;
+  }
+  
   .calc-button {
-    font-size: 1.1rem;
-    min-height: 40px;
+    font-size: 1rem;
   }
   
   .calculator-grid {
@@ -637,8 +654,8 @@
   .lcd-display {
     padding: 14px 12px;
     padding-right: 50px;
-    min-height: 80px;
-    max-height: 140px;
+    min-height: 120px;
+    max-height: 200px;
     margin-bottom: 8px;
   }
   
@@ -660,9 +677,13 @@
     font-size: 1.4rem;
   }
   
+  .calculator-buttons-area {
+    min-height: 180px;
+    max-height: 220px;
+  }
+  
   .calc-button {
-    font-size: 1rem;
-    min-height: 35px;
+    font-size: 0.9rem;
   }
   
   .calculator-grid {
@@ -702,8 +723,8 @@
   .lcd-display {
     padding: 10px 8px;
     padding-right: 40px;
-    min-height: 60px;
-    max-height: 100px;
+    min-height: 80px;
+    max-height: 120px;
     margin-bottom: 4px;
   }
   
@@ -729,9 +750,13 @@
     font-size: 0.8rem;
   }
   
+  .calculator-buttons-area {
+    min-height: 140px;
+    max-height: 180px;
+  }
+  
   .calc-button {
-    font-size: 0.9rem;
-    min-height: 35px;
+    font-size: 0.8rem;
   }
   
   .calculator-grid {
@@ -758,8 +783,7 @@
   }
   
   .calc-button {
-    min-height: 70px;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
   
   .calc-button:active {
