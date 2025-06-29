@@ -583,33 +583,33 @@
   }
   
   .lcd-display {
-    padding: 14px 16px;
-    padding-right: 50px; /* FIXED: Reduced from 70px to 50px for consistency */
+    padding: 12px 14px; /* FIXED: Reduced padding for better fit */
+    padding-right: 45px; /* FIXED: Significantly reduced from 50px */
     margin-bottom: 8px;
     min-height: 120px;
     max-height: 40vh;
   }
   
   .nav-buttons {
-    right: 12px; /* FIXED: Adjusted to match reduced padding-right */
+    right: 10px; /* FIXED: Adjusted to match reduced padding-right */
     gap: 8px;
   }
   
   .nav-button {
-    font-size: 1.3rem; /* FIXED: Reduced from 1.4rem for better fit */
-    padding: 4px 6px; /* FIXED: Reduced padding for smaller screens */
+    font-size: 1.2rem; /* FIXED: Reduced from 1.3rem for better fit */
+    padding: 3px 5px; /* FIXED: Reduced padding for smaller screens */
   }
   
   .lcd-text {
-    font-size: 1.1rem; /* FIXED: Reduced from 1.2rem for better fit */
+    font-size: 1.0rem; /* FIXED: Reduced from 1.1rem for better fit */
   }
   
   .lcd-text-large {
-    font-size: 1.4rem; /* FIXED: Reduced from 1.5rem for better fit */
+    font-size: 1.3rem; /* FIXED: Reduced from 1.4rem for better fit */
   }
   
   .lcd-text-small {
-    font-size: 1.0rem; /* FIXED: Added explicit sizing for small text */
+    font-size: 0.9rem; /* FIXED: Added explicit sizing for small text */
   }
   
   .calc-button {
@@ -630,153 +630,153 @@
 @media (max-width: 360px) {
   .vintage-calculator {
     max-width: 95vw;
-    padding: 8px; /* FIXED: Reduced from 10px for very small screens */
-    padding-bottom: 12px;
+    padding: 6px; /* FIXED: Reduced from 8px for very small screens */
+    padding-bottom: 10px; /* FIXED: Reduced from 12px */
   }
   
   .calc-header {
-    margin-bottom: 4px; /* FIXED: Reduced from 6px */
+    margin-bottom: 3px; /* FIXED: Reduced from 4px */
   }
   
   .calc-brand-name {
-    font-size: 1.1rem;
+    font-size: 1.0rem; /* FIXED: Reduced from 1.1rem */
     letter-spacing: 1px;
   }
   
   .calc-model {
-    font-size: 0.6rem;
+    font-size: 0.55rem; /* FIXED: Reduced from 0.6rem */
   }
   
   .calc-series {
-    font-size: 0.5rem;
+    font-size: 0.45rem; /* FIXED: Reduced from 0.5rem */
   }
   
   .solar-panel {
-    width: 75px;
-    height: 38px;
+    width: 70px; /* FIXED: Reduced from 75px */
+    height: 35px; /* FIXED: Reduced from 38px */
   }
   
   .lcd-display {
-    padding: 12px 14px; /* FIXED: Reduced from 14px 12px for better proportions */
-    padding-right: 40px; /* FIXED: Reduced from 50px for very small screens */
-    margin-bottom: 6px;
-    min-height: 100px;
-    max-height: 35vh;
+    padding: 10px 12px; /* FIXED: Reduced from 12px 14px for better proportions */
+    padding-right: 35px; /* FIXED: Significantly reduced from 40px for very small screens */
+    margin-bottom: 5px; /* FIXED: Reduced from 6px */
+    min-height: 90px; /* FIXED: Reduced from 100px */
+    max-height: 32vh; /* FIXED: Reduced from 35vh */
   }
   
   .nav-buttons {
-    right: 8px; /* FIXED: Adjusted to match reduced padding-right */
-    gap: 6px;
+    right: 6px; /* FIXED: Adjusted to match reduced padding-right */
+    gap: 5px; /* FIXED: Reduced from 6px */
   }
   
   .nav-button {
-    font-size: 1.1rem; /* FIXED: Reduced from 1.2rem for better fit */
-    padding: 3px 5px; /* FIXED: Reduced padding for very small screens */
+    font-size: 1.0rem; /* FIXED: Reduced from 1.1rem for better fit */
+    padding: 2px 4px; /* FIXED: Reduced padding for very small screens */
   }
   
   .lcd-text {
-    font-size: 1.0rem; /* FIXED: Reduced from 1.1rem for better fit */
+    font-size: 0.9rem; /* FIXED: Reduced from 1.0rem for better fit */
   }
   
   .lcd-text-large {
-    font-size: 1.3rem; /* FIXED: Reduced from 1.4rem for better fit */
+    font-size: 1.2rem; /* FIXED: Reduced from 1.3rem for better fit */
   }
   
   .lcd-text-small {
-    font-size: 0.9rem; /* FIXED: Reduced for better fit */
+    font-size: 0.8rem; /* FIXED: Reduced for better fit */
   }
   
   .calc-button {
-    font-size: 1rem;
-    min-height: 36px;
+    font-size: 0.95rem; /* FIXED: Reduced from 1rem */
+    min-height: 34px; /* FIXED: Reduced from 36px */
     padding: 3px 2px;
   }
   
   .calculator-buttons-area {
-    min-height: 190px;
+    min-height: 180px; /* FIXED: Reduced from 190px */
   }
   
   .calculator-grid {
-    gap: 4px;
+    gap: 3px; /* FIXED: Reduced from 4px */
   }
 }
 
 /* Very short screens (landscape mobile) */
 @media (max-height: 500px) {
   .vintage-calculator {
-    padding: 6px; /* FIXED: Reduced from 8px for landscape mode */
-    padding-bottom: 8px; /* FIXED: Reduced from 10px */
+    padding: 4px; /* FIXED: Reduced from 6px for landscape mode */
+    padding-bottom: 6px; /* FIXED: Reduced from 8px */
   }
   
   .calc-header {
-    margin-bottom: 3px; /* FIXED: Reduced from 4px */
+    margin-bottom: 2px; /* FIXED: Reduced from 3px */
   }
   
   .calc-brand-name {
-    font-size: 0.9rem; /* FIXED: Reduced from 1rem for landscape */
+    font-size: 0.8rem; /* FIXED: Reduced from 0.9rem for landscape */
     letter-spacing: 1px;
   }
   
   .calc-model {
-    font-size: 0.45rem; /* FIXED: Reduced from 0.5rem */
+    font-size: 0.4rem; /* FIXED: Reduced from 0.45rem */
   }
   
   .calc-series {
-    font-size: 0.35rem; /* FIXED: Reduced from 0.4rem */
+    font-size: 0.3rem; /* FIXED: Reduced from 0.35rem */
   }
   
   .solar-panel {
-    width: 55px; /* FIXED: Reduced from 60px */
-    height: 28px; /* FIXED: Reduced from 30px */
+    width: 50px; /* FIXED: Reduced from 55px */
+    height: 25px; /* FIXED: Reduced from 28px */
   }
   
   .lcd-display {
-    padding: 8px 10px; /* FIXED: Reduced from 10px 8px */
-    padding-right: 35px; /* FIXED: Reduced from 40px for landscape */
-    margin-bottom: 3px; /* FIXED: Reduced from 4px */
-    min-height: 70px; /* FIXED: Reduced from 80px for landscape */
-    max-height: 25vh; /* FIXED: Reduced from 30vh */
+    padding: 6px 8px; /* FIXED: Reduced from 8px 10px */
+    padding-right: 30px; /* FIXED: Significantly reduced from 35px for landscape */
+    margin-bottom: 2px; /* FIXED: Reduced from 3px */
+    min-height: 60px; /* FIXED: Reduced from 70px for landscape */
+    max-height: 22vh; /* FIXED: Reduced from 25vh */
   }
   
   .nav-buttons {
-    right: 6px; /* FIXED: Adjusted to match reduced padding-right */
-    gap: 3px; /* FIXED: Reduced from 4px */
-  }
-  
-  .nav-button {
-    font-size: 0.9rem; /* FIXED: Reduced from 1rem for landscape */
-    padding: 2px 3px; /* FIXED: Reduced padding for landscape */
-  }
-  
-  .lcd-text {
-    font-size: 0.8rem; /* FIXED: Reduced from 0.9rem for landscape */
-  }
-  
-  .lcd-text-large {
-    font-size: 1.1rem; /* FIXED: Reduced from 1.2rem for landscape */
-  }
-  
-  .lcd-text-small {
-    font-size: 0.7rem; /* FIXED: Reduced from 0.8rem for landscape */
-  }
-  
-  .calc-button {
-    font-size: 0.8rem; /* FIXED: Reduced from 0.9rem for landscape */
-    min-height: 28px; /* FIXED: Reduced from 32px */
-    padding: 2px 1px;
-  }
-  
-  .calculator-buttons-area {
-    min-height: 150px; /* FIXED: Reduced from 170px for landscape */
-  }
-  
-  .calculator-grid {
+    right: 4px; /* FIXED: Adjusted to match reduced padding-right */
     gap: 2px; /* FIXED: Reduced from 3px */
   }
   
+  .nav-button {
+    font-size: 0.8rem; /* FIXED: Reduced from 0.9rem for landscape */
+    padding: 1px 2px; /* FIXED: Reduced padding for landscape */
+  }
+  
+  .lcd-text {
+    font-size: 0.7rem; /* FIXED: Reduced from 0.8rem for landscape */
+  }
+  
+  .lcd-text-large {
+    font-size: 1.0rem; /* FIXED: Reduced from 1.1rem for landscape */
+  }
+  
+  .lcd-text-small {
+    font-size: 0.6rem; /* FIXED: Reduced from 0.7rem for landscape */
+  }
+  
+  .calc-button {
+    font-size: 0.7rem; /* FIXED: Reduced from 0.8rem for landscape */
+    min-height: 25px; /* FIXED: Reduced from 28px */
+    padding: 1px;
+  }
+  
+  .calculator-buttons-area {
+    min-height: 135px; /* FIXED: Reduced from 150px for landscape */
+  }
+  
+  .calculator-grid {
+    gap: 2px; /* FIXED: Maintained at 2px */
+  }
+  
   .game-display {
-    height: 50px; /* FIXED: Reduced from 60px for landscape */
-    margin-bottom: 4px; /* FIXED: Reduced from 6px */
+    height: 40px; /* FIXED: Reduced from 50px for landscape */
+    margin-bottom: 3px; /* FIXED: Reduced from 4px */
   }
 }
 
