@@ -22,6 +22,23 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
     return input;
   };
 
+  // Determine what to show in feedback area
+  const getFeedbackContent = () => {
+    if (gameState.gameStatus === 'won') {
+      return 'CORRECT!';
+    }
+    
+    if (gameState.lastResult !== undefined) {
+      // Show result and check if it's correct
+      const isCorrect = Math.abs(gameState.lastResult - gameState.problem.targetValue) < 0.001;
+      if (!isCorrect) {
+        return 'INCORRECT';
+      }
+    }
+    
+    return '';
+  };
+
   return (
     <div className="game-display">
       {/* Timer - Top Left */}
@@ -41,17 +58,19 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
       {/* User Input - Bottom Right */}
       <div className="game-display-input">
         <div className="lcd-text text-right">
-          {formatUserInput(gameState.userInput)}
+          {gameState.lastResult !== undefined ? (
+            `= ${gameState.lastResult}`
+          ) : (
+            formatUserInput(gameState.userInput)
+          )}
         </div>
       </div>
 
       {/* Feedback Area - Bottom Left */}
       <div className="game-display-feedback">
-        {gameState.lastResult !== undefined && (
-          <div className="lcd-text lcd-text-small">
-            = {gameState.lastResult}
-          </div>
-        )}
+        <div className="lcd-text lcd-text-small">
+          {getFeedbackContent()}
+        </div>
       </div>
     </div>
   );
