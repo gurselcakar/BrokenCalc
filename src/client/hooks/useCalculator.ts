@@ -43,6 +43,9 @@ export const useCalculator = ({
         // Delete last character
         newUserInput = newUserInput.slice(0, -1);
         newDisplay = newUserInput;
+        // Clear result when deleting
+        newLastResult = undefined;
+        newShowResult = false;
       } else if (actualValue === '=') {
         // Calculate result
         if (newUserInput) {
@@ -57,22 +60,29 @@ export const useCalculator = ({
           } catch (error) {
             console.error('Calculation error:', error);
             newDisplay = 'ERROR';
+            newShowResult = true;
           }
         }
       } else {
         // Add number or operator
-        newUserInput += actualValue;
+        
+        // If we were showing a result, clear it and start fresh
+        if (prev.showResult) {
+          newUserInput = actualValue;
+          newShowResult = false;
+          newLastResult = undefined;
+        } else {
+          newUserInput += actualValue;
+        }
         
         // For God Tier mode, show different value than what's actually input
         const displayValue = getDisplayValue(actualValue, buttonMapping);
-        newDisplay = prev.display + displayValue;
         
-        // Clear result display when user continues typing
         if (prev.showResult) {
-          newUserInput = actualValue;
-          newDisplay = getDisplayValue(actualValue, buttonMapping);
-          newShowResult = false;
-          newLastResult = undefined;
+          // Starting fresh after a result
+          newDisplay = displayValue;
+        } else {
+          newDisplay = prev.display + displayValue;
         }
       }
 

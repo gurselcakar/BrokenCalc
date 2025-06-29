@@ -22,14 +22,25 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
     return input;
   };
 
+  // Determine what to show in the input area (bottom-right)
+  const getInputDisplay = () => {
+    // If we have a calculated result, show it with equals sign
+    if (gameState.lastResult !== undefined) {
+      return `= ${gameState.lastResult}`;
+    }
+    
+    // Otherwise show the equation being built
+    return formatUserInput(gameState.userInput);
+  };
+
   // Determine what to show in feedback area
   const getFeedbackContent = () => {
     if (gameState.gameStatus === 'won') {
       return 'CORRECT!';
     }
     
+    // Show "INCORRECT" if we have a result that doesn't match the target
     if (gameState.lastResult !== undefined) {
-      // Show result and check if it's correct
       const isCorrect = Math.abs(gameState.lastResult - gameState.problem.targetValue) < 0.001;
       if (!isCorrect) {
         return 'INCORRECT';
@@ -55,14 +66,10 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
         </div>
       </div>
 
-      {/* User Input - Bottom Right */}
+      {/* User Input/Result - Bottom Right */}
       <div className="game-display-input">
         <div className="lcd-text text-right">
-          {gameState.lastResult !== undefined ? (
-            `= ${gameState.lastResult}`
-          ) : (
-            formatUserInput(gameState.userInput)
-          )}
+          {getInputDisplay()}
         </div>
       </div>
 

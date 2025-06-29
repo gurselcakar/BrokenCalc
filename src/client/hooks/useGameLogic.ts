@@ -125,33 +125,6 @@ export const useGameLogic = ({ difficulty, onGameEnd }: UseGameLogicProps) => {
     }
   }, [gameState, onGameEnd]);
 
-  // Handle button press (pass through to calculator)
-  const handleButtonPress = useCallback((buttonId: string) => {
-    if (!gameState || gameState.gameStatus !== 'playing') return;
-
-    // Update user input for display purposes
-    setGameState(prev => {
-      if (!prev) return prev;
-
-      let newUserInput = prev.userInput;
-
-      if (buttonId === 'delete') {
-        newUserInput = newUserInput.slice(0, -1);
-      } else if (buttonId === 'equals') {
-        // Don't update user input for equals - let calculator handle it
-        return prev;
-      } else {
-        // Add the button to user input (this is the raw button press, not scrambled)
-        newUserInput += buttonId;
-      }
-
-      return {
-        ...prev,
-        userInput: newUserInput,
-      };
-    });
-  }, [gameState]);
-
   // Reset game
   const resetGame = useCallback(() => {
     if (timerRef.current) {
@@ -175,7 +148,6 @@ export const useGameLogic = ({ difficulty, onGameEnd }: UseGameLogicProps) => {
     isInitialized,
     initializeGame,
     handleEquationComplete,
-    handleButtonPress,
     resetGame,
   };
 };
