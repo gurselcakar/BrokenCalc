@@ -14,10 +14,20 @@ export const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
 }) => {
   return (
     <div className="vintage-calculator">
-      {/* Brand Name and Model */}
-      <div className="calc-brand">
-        <div className="calc-brand-name">CALCO</div>
-        <div className="calc-model">FX-420B</div>
+      {/* Calculator Header with Brand and Solar Panel */}
+      <div className="calc-header">
+        <div className="calc-brand">
+          <div className="calc-brand-name">CASIO</div>
+          <div className="calc-model">fx-85GT X</div>
+          <div className="calc-series">CLASSWIZ</div>
+        </div>
+        <div className="solar-panel">
+          <div className="solar-cells">
+            {Array.from({ length: 12 }, (_, i) => (
+              <div key={i} className="solar-cell" />
+            ))}
+          </div>
+        </div>
       </div>
       
       {/* LCD Display */}

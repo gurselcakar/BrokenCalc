@@ -43,13 +43,7 @@ export const DifficultySelection: React.FC<DifficultySelectionProps> = ({
           </div>
         </>
       )}
-      
-      <div className="lcd-text lcd-text-small text-center mt-8">
-        Use ▲▼ to navigate
-      </div>
-      <div className="lcd-text lcd-text-small text-center">
-        Press OK to start
-      </div>
+
     </div>
   );
 };

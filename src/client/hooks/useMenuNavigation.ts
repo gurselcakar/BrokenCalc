@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { 
   ScreenState, 
   MenuOption, 
   DifficultyMode, 
   HomeScreenState, 
   InputMethod,
-  NavigationAction 
 } from '../../shared/types/navigation';
 
 const MENU_OPTIONS: MenuOption[] = ['PLAY', 'HOW TO PLAY', 'LEADERBOARD'];
@@ -18,10 +17,15 @@ export const useMenuNavigation = () => {
     selectedDifficulty: null,
     showBackButton: false,
     isTransitioning: false,
+    scrollPosition: 0,
+    maxScrollPosition: 0,
+    isScrolling: false,
   });
 
   const [inputMethod, setInputMethod] = useState<InputMethod>('TOUCH');
-  const [screenHistory, setScreenHistory] = useState<ScreenState[]>(['WELCOME']);
+  
+  // Use ref to avoid dependency issues with screenHistory
+  const screenHistoryRef = useRef<ScreenState[]>(['WELCOME']);
 
   // Detect input method
   useEffect(() => {
@@ -40,6 +44,40 @@ export const useMenuNavigation = () => {
     };
   }, []);
 
+  // Scroll content when overflow detected
+  const scrollContent = useCallback((direction: 'UP' | 'DOWN') => {
+    setState(prev => {
+      if (direction === 'UP' && prev.scrollPosition > 0) {
+        return {
+          ...prev,
+          scrollPosition: prev.scrollPosition - 1,
+          isScrolling: true,
+        };
+      } else if (direction === 'DOWN' && prev.scrollPosition < prev.maxScrollPosition) {
+        return {
+          ...prev,
+          scrollPosition: prev.scrollPosition + 1,
+          isScrolling: true,
+        };
+      }
+      return prev;
+    });
+
+    // Reset scrolling state
+    setTimeout(() => {
+      setState(prev => ({ ...prev, isScrolling: false }));
+    }, 100);
+  }, []);
+
+  // Set scroll bounds for content
+  const setScrollBounds = useCallback((maxScroll: number) => {
+    setState(prev => ({
+      ...prev,
+      maxScrollPosition: Math.max(0, maxScroll),
+      scrollPosition: Math.min(prev.scrollPosition, maxScroll),
+    }));
+  }, []);
+
   // Navigate between menu options
   const navigateMenu = useCallback((direction: 'UP' | 'DOWN') => {
     setState(prev => {
@@ -55,7 +93,7 @@ export const useMenuNavigation = () => {
         
         return {
           ...prev,
-          selectedMenuOption: MENU_OPTIONS[newIndex],
+          selectedMenuOption: MENU_OPTIONS[newIndex] || 'PLAY',
           isTransitioning: true,
         };
       } else if (prev.currentScreen === 'DIFFICULTY_SELECTION') {
@@ -72,7 +110,7 @@ export const useMenuNavigation = () => {
         
         return {
           ...prev,
-          selectedDifficulty: DIFFICULTY_OPTIONS[newIndex],
+          selectedDifficulty: DIFFICULTY_OPTIONS[newIndex] || 'easy',
           isTransitioning: true,
         };
       }
@@ -85,44 +123,80 @@ export const useMenuNavigation = () => {
       setState(prev => ({ ...prev, isTransitioning: false }));
     }, 300);
   }, []);
+
+  // Check if current screen has scrollable content
+  const hasScrollableContent = useCallback((screen: ScreenState) => {
+    return screen === 'HOW_TO_PLAY' || screen === 'LEADERBOARD';
+  }, []);
+
+  // Handle navigation (either scroll or menu navigation)
+  const handleNavigation = useCallback((direction: 'UP' | 'DOWN') => {
+    const isScrollableScreen = hasScrollableContent(state.currentScreen);
+    const hasScroll = state.maxScrollPosition > 0;
+    
+    console.log('Navigation attempt:', {
+      direction,
+      currentScreen: state.currentScreen,
+      isScrollableScreen,
+      maxScrollPosition: state.maxScrollPosition,
+      hasScroll,
+      willScroll: isScrollableScreen && hasScroll
+    });
+    
+    if (isScrollableScreen && hasScroll) {
+      console.log('Using scroll navigation');
+      scrollContent(direction);
+    } else {
+      console.log('Using menu navigation');
+      navigateMenu(direction);
+    }
+  }, [state.currentScreen, state.maxScrollPosition, scrollContent, navigateMenu, hasScrollableContent]);
 
   // Handle selection/confirmation
   const handleSelect = useCallback(() => {
     setState(prev => {
       if (prev.currentScreen === 'MAIN_MENU') {
         if (prev.selectedMenuOption === 'PLAY') {
-          setScreenHistory(history => [...history, 'DIFFICULTY_SELECTION']);
+          screenHistoryRef.current = [...screenHistoryRef.current, 'DIFFICULTY_SELECTION'];
           return {
             ...prev,
             currentScreen: 'DIFFICULTY_SELECTION',
             selectedDifficulty: 'easy',
             showBackButton: true,
             isTransitioning: true,
+            scrollPosition: 0,
+            maxScrollPosition: 0,
           };
         } else if (prev.selectedMenuOption === 'HOW TO PLAY') {
-          setScreenHistory(history => [...history, 'HOW_TO_PLAY']);
+          screenHistoryRef.current = [...screenHistoryRef.current, 'HOW_TO_PLAY'];
           return {
             ...prev,
             currentScreen: 'HOW_TO_PLAY',
             showBackButton: true,
             isTransitioning: true,
+            scrollPosition: 0,
+            maxScrollPosition: 0,
           };
         } else if (prev.selectedMenuOption === 'LEADERBOARD') {
-          setScreenHistory(history => [...history, 'LEADERBOARD']);
+          screenHistoryRef.current = [...screenHistoryRef.current, 'LEADERBOARD'];
           return {
             ...prev,
             currentScreen: 'LEADERBOARD',
             showBackButton: true,
             isTransitioning: true,
+            scrollPosition: 0,
+            maxScrollPosition: 0,
           };
         }
       } else if (prev.currentScreen === 'DIFFICULTY_SELECTION' && prev.selectedDifficulty) {
-        setScreenHistory(history => [...history, 'COMING_SOON']);
+        screenHistoryRef.current = [...screenHistoryRef.current, 'COMING_SOON'];
         return {
           ...prev,
           currentScreen: 'COMING_SOON',
           showBackButton: true,
           isTransitioning: true,
+          scrollPosition: 0,
+          maxScrollPosition: 0,
         };
       }
       
@@ -135,20 +209,22 @@ export const useMenuNavigation = () => {
     }, 300);
   }, []);
 
-  // Handle back navigation
+  // Handle back navigation - Fixed circular dependency
   const handleBack = useCallback(() => {
     setState(prev => {
-      const newHistory = [...screenHistory];
+      const newHistory = [...screenHistoryRef.current];
       newHistory.pop(); // Remove current screen
       const previousScreen = newHistory[newHistory.length - 1] || 'MAIN_MENU';
       
-      setScreenHistory(newHistory);
+      screenHistoryRef.current = newHistory;
       
       return {
         ...prev,
         currentScreen: previousScreen,
         showBackButton: previousScreen !== 'MAIN_MENU' && previousScreen !== 'WELCOME',
         isTransitioning: true,
+        scrollPosition: 0,
+        maxScrollPosition: 0,
       };
     });
 
@@ -156,10 +232,10 @@ export const useMenuNavigation = () => {
     setTimeout(() => {
       setState(prev => ({ ...prev, isTransitioning: false }));
     }, 300);
-  }, [screenHistory]);
+  }, []); // Removed screenHistory dependency to fix infinite loop
 
   // Initialize welcome sequence
-  const startWelcomeSequence = useCallback((username?: string) => {
+  const startWelcomeSequence = useCallback(() => {
     setState(prev => ({
       ...prev,
       currentScreen: 'WELCOME',
@@ -174,7 +250,7 @@ export const useMenuNavigation = () => {
         showBackButton: false,
         isTransitioning: true,
       }));
-      setScreenHistory(['MAIN_MENU']);
+      screenHistoryRef.current = ['MAIN_MENU'];
       
       setTimeout(() => {
         setState(prev => ({ ...prev, isTransitioning: false }));
@@ -182,7 +258,7 @@ export const useMenuNavigation = () => {
     }, 2500);
   }, []);
 
-  // Keyboard event handler
+  // Keyboard event handler - Fixed dependencies
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (state.isTransitioning) return;
@@ -190,11 +266,11 @@ export const useMenuNavigation = () => {
       switch (event.key) {
         case 'ArrowUp':
           event.preventDefault();
-          navigateMenu('UP');
+          handleNavigation('UP');
           break;
         case 'ArrowDown':
           event.preventDefault();
-          navigateMenu('DOWN');
+          handleNavigation('DOWN');
           break;
         case 'Enter':
         case 'ArrowRight':
@@ -213,17 +289,20 @@ export const useMenuNavigation = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [state.isTransitioning, state.showBackButton, navigateMenu, handleSelect, handleBack]);
+  }, [state.isTransitioning, state.showBackButton, handleNavigation, handleSelect, handleBack]);
 
   return {
     state,
     inputMethod,
     actions: {
-      navigateUp: () => navigateMenu('UP'),
-      navigateDown: () => navigateMenu('DOWN'),
+      navigateUp: () => handleNavigation('UP'),
+      navigateDown: () => handleNavigation('DOWN'),
       select: handleSelect,
       back: handleBack,
       startWelcomeSequence,
+      setScrollBounds,
+      scrollUp: () => scrollContent('UP'),
+      scrollDown: () => scrollContent('DOWN'),
     },
   };
 };

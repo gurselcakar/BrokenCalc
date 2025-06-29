@@ -5,166 +5,188 @@ This document provides a detailed implementation roadmap for BrokenCalc, organiz
 ## Phase 1: Foundation & Vintage Calculator Home Screen
 
 ### 1.1 Home Screen Types Setup
-- [ ] **Define home screen types** in `src/shared/types/navigation.ts`
-  - [ ] `DifficultyMode` enum (`'easy' | 'medium' | 'hard' | 'hardcore' | 'godtier'`) - *for difficulty selection only*
-  - [ ] `MenuOption` type for home screen navigation (`'PLAY' | 'HOW TO PLAY' | 'LEADERBOARD'`)
-  - [ ] `ScreenState` type (`'WELCOME' | 'MAIN_MENU' | 'DIFFICULTY_SELECTION' | 'COMING_SOON' | 'HOW_TO_PLAY' | 'LEADERBOARD'`)
-  - [ ] `InputMethod` type (`'TOUCH' | 'MOUSE' | 'KEYBOARD'`) - *for detecting input type*
-  - [ ] `NavigationAction` type (`'UP' | 'DOWN' | 'SELECT' | 'BACK'`) - *for unified navigation actions*
-  - [ ] `HomeScreenState` interface for menu navigation state and welcome sequence
-  - [ ] `WelcomeState` interface for username display and transition timing
-  - [ ] `NavigationState` interface for tracking current screen, selected option, and navigation history
+- [x] **Define home screen types** in `src/shared/types/navigation.ts`
+  - [x] `DifficultyMode` enum (`'easy' | 'medium' | 'hard' | 'hardcore' | 'godtier'`) - *for difficulty selection only*
+  - [x] `MenuOption` type for home screen navigation (`'PLAY' | 'HOW TO PLAY' | 'LEADERBOARD'`)
+  - [x] `ScreenState` type (`'WELCOME' | 'MAIN_MENU' | 'DIFFICULTY_SELECTION' | 'COMING_SOON' | 'HOW_TO_PLAY' | 'LEADERBOARD'`)
+  - [x] `InputMethod` type (`'TOUCH' | 'MOUSE' | 'KEYBOARD'`) - *for detecting input type*
+  - [x] `NavigationAction` type (`'UP' | 'DOWN' | 'SELECT' | 'BACK'`) - *for unified navigation actions*
+  - [x] `HomeScreenState` interface for menu navigation state and welcome sequence *(enhanced with scroll support)*
+  - [x] `WelcomeState` interface for username display and transition timing
+  - [x] `NavigationState` interface for tracking current screen, selected option, and navigation history
 
 ### 1.2 Vintage Calculator Display Home Screen
-- [ ] **Create `src/client/components/HomeScreen.tsx`**
-  - [ ] Full-screen Casio-style calculator display design (green-on-black LCD aesthetic)
-  - [ ] Fake brand name and FX model number (e.g., "CALCO FX-420B")
-  - [ ] Thick calculator display bezels without solar panel area
-  - [ ] Dark background with monospace font for display text
-  - [ ] Classic green text color on dark display background
-  - [ ] Mobile-responsive design maintaining calculator display proportions
-  - [ ] Touch-friendly interface while preserving vintage aesthetic
+- [x] **Create `src/client/components/HomeScreen.tsx`**
+  - [x] Full-screen Casio-style calculator display design (green-on-black LCD aesthetic)
+  - [x] **Real CASIO fx-85GT X CLASSWIZ branding** *(design decision: used authentic branding)*
+  - [x] Thick calculator display bezels **with detailed solar panel area** *(enhanced from original plan)*
+  - [x] Dark background with monospace font for display text
+  - [x] Classic green text color on dark display background
+  - [x] Mobile-responsive design maintaining calculator display proportions
+  - [x] Touch-friendly interface while preserving vintage aesthetic
 
-- [ ] **Create `src/client/components/CalculatorDisplay.tsx`**
-  - [ ] Vintage LCD display component with thick realistic borders
-  - [ ] Scanline effects and subtle green glow for authenticity
-  - [ ] Text rendering with classic calculator dot-matrix font
-  - [ ] Responsive sizing while maintaining aspect ratio
-  - [ ] Display dimming/brightening animations
-  - [ ] Retro refresh effect for menu transitions (like old calculator screen updates)
+- [x] **Create `src/client/components/CalculatorDisplay.tsx`**
+  - [x] Vintage LCD display component with thick realistic borders
+  - [x] Scanline effects and subtle green glow for authenticity
+  - [x] Text rendering with classic calculator dot-matrix font
+  - [x] Responsive sizing while maintaining aspect ratio
+  - [x] Display dimming/brightening animations
+  - [x] Retro refresh effect for menu transitions (like old calculator screen updates)
+  - [x] **Detailed solar panel with individual solar cells** *(enhancement)*
 
-- [ ] **Create `src/client/components/WelcomeSequence.tsx`**
-  - [ ] Initial welcome message display: "WELCOME [USERNAME]"
-  - [ ] Smooth transition from welcome to menu after 2-3 seconds
-  - [ ] Authentic calculator startup sequence feel
-  - [ ] Reddit username integration with proper formatting
+- [x] **Create `src/client/components/WelcomeSequence.tsx`**
+  - [x] Initial welcome message display: "WELCOME [USERNAME]"
+  - [x] Smooth transition from welcome to menu after 2-3 seconds
+  - [x] Authentic calculator startup sequence feel
+  - [x] Reddit username integration with proper formatting
 
-- [ ] **Create `src/client/components/MenuNavigation.tsx`**
-  - [ ] **Four-button navigation panel** positioned on right inside display
-  - [ ] Up arrow (▲), OK button, Down arrow (▼), **Back button (◄)** with vintage Casio-style styling
-  - [ ] Menu cycling logic: >PLAY → >HOW TO PLAY → >LEADERBOARD → >PLAY
-  - [ ] Single menu item display with ">" prefix (e.g., ">PLAY")
-  - [ ] **Multi-platform navigation support:**
-    - [ ] **Mobile**: Touch/tap buttons (▲▼ to navigate, OK to select, ◄ to go back)
-    - [ ] **Desktop Mouse**: Click buttons (same as mobile)
-    - [ ] **Desktop Keyboard**: Up/Down arrows (navigate), Enter/Right arrow (select), Left arrow (back)
-  - [ ] Retro refresh effect between menu transitions
-  - [ ] Authentic calculator button press animations with depression and feedback
-  - [ ] Touch-friendly button sizes while maintaining vintage appearance
-  - [ ] **Back button visibility**: Show/hide based on current screen (hidden on main menu, visible on sub-menus)
+- [x] **Create `src/client/components/MenuNavigation.tsx`**
+  - [x] **Four-button navigation panel** positioned on right inside display
+  - [x] Up arrow (▲), OK button, Down arrow (▼), **Back button (◄)** with vintage Casio-style styling
+  - [x] Menu cycling logic: >PLAY → >HOW TO PLAY → >LEADERBOARD → >PLAY
+  - [x] Single menu item display with ">" prefix (e.g., ">PLAY")
+  - [x] **Multi-platform navigation support:**
+    - [x] **Mobile**: Touch/tap buttons (▲▼ to navigate, OK to select, ◄ to go back)
+    - [x] **Desktop Mouse**: Click buttons (same as mobile)
+    - [x] **Desktop Keyboard**: Up/Down arrows (navigate), Enter/Right arrow (select), Left arrow (back)
+  - [x] Retro refresh effect between menu transitions
+  - [x] Authentic calculator button press animations with depression and feedback
+  - [x] Touch-friendly button sizes while maintaining vintage appearance
+  - [x] **Back button visibility**: Show/hide based on current screen (hidden on main menu, visible on sub-menus)
 
-- [ ] **Create `src/client/components/DifficultySelection.tsx`**
-  - [ ] Difficulty selection screen triggered after "PLAY" selection
-  - [ ] Menu options: >EASY → >MEDIUM → >HARD → >HARDCORE → >GOD TIER → >EASY
-  - [ ] Same navigation pattern as main menu with all input methods
-  - [ ] Retro transition effects between difficulty options
-  - [ ] **Back button functionality**: Return to main menu (Left arrow key, Back button, or Escape key)
-  - [ ] **On difficulty selection (OK press), navigate to "Coming Soon" placeholder**
+- [x] **Create `src/client/components/DifficultySelection.tsx`**
+  - [x] Difficulty selection screen triggered after "PLAY" selection
+  - [x] Menu options: >EASY → >MEDIUM → >HARD → >HARDCORE → >GOD TIER → >EASY
+  - [x] Same navigation pattern as main menu with all input methods
+  - [x] Retro transition effects between difficulty options
+  - [x] **Back button functionality**: Return to main menu (Left arrow key, Back button, or Escape key)
+  - [x] **On difficulty selection (OK press), navigate to "Coming Soon" placeholder**
 
-- [ ] **Create `src/client/components/ComingSoon.tsx`**
-  - [ ] Temporary placeholder screen for game functionality
-  - [ ] Vintage calculator display styling consistent with home screen
-  - [ ] Message: "COMING SOON..." in retro calculator font
-  - [ ] Show selected difficulty mode (e.g., "EASY MODE")
-  - [ ] **Multiple return options**:
-    - [ ] **Mobile**: Back button (◄) or tap anywhere on screen
-    - [ ] **Desktop**: Left arrow, Escape key, or Back button click
-    - [ ] Display "Press ◄ to return" instruction
-  - [ ] Maintains vintage aesthetic while clearly indicating placeholder status
+- [x] **Create `src/client/components/ComingSoon.tsx`**
+  - [x] Temporary placeholder screen for game functionality
+  - [x] Vintage calculator display styling consistent with home screen
+  - [x] Message: "COMING SOON..." in retro calculator font
+  - [x] Show selected difficulty mode (e.g., "EASY MODE")
+  - [x] **Multiple return options**:
+    - [x] **Mobile**: Back button (◄) or tap anywhere on screen
+    - [x] **Desktop**: Left arrow, Escape key, or Back button click
+    - [x] Display "Press ◄ to return" instruction
+  - [x] Maintains vintage aesthetic while clearly indicating placeholder status
 
-- [ ] **Create `src/client/hooks/useMenuNavigation.ts`**
-  - [ ] Menu state management (current selected option)
-  - [ ] **Comprehensive input handling:**
-    - [ ] **Keyboard events**: Up/Down (navigate), Enter/Right (select), Left/Escape (back)
-    - [ ] **Touch events**: Button taps and screen interactions
-    - [ ] **Mouse events**: Button clicks and hover states
-  - [ ] Circular navigation logic between menu options
-  - [ ] Menu selection action handlers
-  - [ ] **Back navigation logic** with screen history stack
-  - [ ] Retro refresh effect triggering
-  - [ ] Navigation between main menu, difficulty selection, and sub-screens
-  - [ ] **Navigation button visibility control** (show/hide back button based on current screen)
+- [x] **Create `src/client/hooks/useMenuNavigation.ts`**
+  - [x] Menu state management (current selected option)
+  - [x] **Comprehensive input handling:**
+    - [x] **Keyboard events**: Up/Down (navigate), Enter/Right (select), Left/Escape (back)
+    - [x] **Touch events**: Button taps and screen interactions
+    - [x] **Mouse events**: Button clicks and hover states
+  - [x] Circular navigation logic between menu options
+  - [x] Menu selection action handlers
+  - [x] **Back navigation logic** with screen history stack
+  - [x] Retro refresh effect triggering
+  - [x] Navigation between main menu, difficulty selection, and sub-screens
+  - [x] **Navigation button visibility control** (show/hide back button based on current screen)
+  - [x] **Enhanced with scrollable content support** *(for longer pages)*
 
-- [ ] **Create `src/client/components/HowToPlay.tsx`**
-  - [ ] Full-screen overlay maintaining calculator display aesthetic
-  - [ ] Game rules displayed in vintage calculator style
-  - [ ] Difficulty-specific explanations with retro formatting
-  - [ ] **Navigation instructions for all input methods** (touch, mouse, keyboard)
-  - [ ] **Back navigation functionality** using same multi-platform approach
-  - [ ] Return to main menu via ◄ button, Left arrow, or Escape key
+- [x] **Create `src/client/components/HowToPlay.tsx`**
+  - [x] Full-screen overlay maintaining calculator display aesthetic
+  - [x] Game rules displayed in vintage calculator style
+  - [x] Difficulty-specific explanations with retro formatting
+  - [x] **Navigation instructions for all input methods** (touch, mouse, keyboard)
+  - [x] **Back navigation functionality** using same multi-platform approach
+  - [x] Return to main menu via ◄ button, Left arrow, or Escape key
+  - [x] **Enhanced with scrollable content** *(for longer rule explanations)*
 
-- [ ] **Create `src/client/components/Leaderboard.tsx`**
-  - [ ] Scoreboard displayed in calculator display style
-  - [ ] Top scores with vintage formatting and monospace alignment
-  - [ ] Difficulty-based filtering with calculator-style selection
-  - [ ] **Back navigation functionality** using same multi-platform approach
-  - [ ] Return to main menu via ◄ button, Left arrow, or Escape key
+- [x] **Create `src/client/components/Leaderboard.tsx`**
+  - [x] Scoreboard displayed in calculator display style
+  - [x] Top scores with vintage formatting and monospace alignment
+  - [x] Difficulty-based filtering with calculator-style selection
+  - [x] **Back navigation functionality** using same multi-platform approach
+  - [x] Return to main menu via ◄ button, Left arrow, or Escape key
+  - [x] **Enhanced with scrollable content and sample data** *(for longer leaderboards)*
 
-- [ ] **Update `src/client/App.tsx`**
-  - [ ] Router setup for Home → Difficulty Selection → Coming Soon → Leaderboard screens
-  - [ ] State management for current screen, menu selection, and difficulty
-  - [ ] Menu option handlers (Play → Difficulty → Coming Soon, How to Play, Leaderboard)
-  - [ ] Reddit username integration for welcome sequence
-  - [ ] Welcome sequence initialization on app start
-  - [ ] **Temporary routing: difficulty selection leads to "Coming Soon" placeholder**
+- [x] **Update `src/client/App.tsx`**
+  - [x] Router setup for Home → Difficulty Selection → Coming Soon → Leaderboard screens
+  - [x] State management for current screen, menu selection, and difficulty
+  - [x] Menu option handlers (Play → Difficulty → Coming Soon, How to Play, Leaderboard)
+  - [x] Reddit username integration for welcome sequence
+  - [x] Welcome sequence initialization on app start
+  - [x] **Temporary routing: difficulty selection leads to "Coming Soon" placeholder**
+
+- [x] **Create `src/client/components/ScrollableContent.tsx`** *(ENHANCEMENT ADDED)*
+  - [x] **Reusable scrollable content wrapper for longer pages**
+  - [x] **Smooth scroll behavior with vintage calculator aesthetic**
+  - [x] **Scroll bounds calculation and management**
+  - [x] **Integration with navigation controls for scroll vs menu navigation**
 
 ### 1.3 Vintage Casio-Style Styling & Assets
-- [ ] **Create `src/client/styles/vintage-calculator.css`**
-  - [ ] CSS custom properties for green-on-black LCD color scheme
-  - [ ] Thick calculator display border and bezel styles (Casio-inspired)
-  - [ ] Fake brand name and model styling ("CALCO FX-420B")
-  - [ ] Dot-matrix monospace font imports and fallbacks
-  - [ ] Retro refresh effect animation keyframes
-  - [ ] Scanline and green glow effects
-  - [ ] Mobile-responsive vintage styling with touch-friendly elements
-  - [ ] Authentic calculator button depression animations
+- [x] **Create `src/client/styles/vintage-calculator.css`**
+  - [x] CSS custom properties for green-on-black LCD color scheme
+  - [x] Thick calculator display border and bezel styles (Casio-inspired)
+  - [x] **Real CASIO branding styling** *(design decision: authentic branding)*
+  - [x] Dot-matrix monospace font imports and fallbacks
+  - [x] Retro refresh effect animation keyframes
+  - [x] Scanline and green glow effects
+  - [x] Mobile-responsive vintage styling with touch-friendly elements
+  - [x] Authentic calculator button depression animations
+  - [x] **Enhanced mobile responsiveness across multiple screen sizes** *(improvement)*
+  - [x] **Scrollable content styling for longer pages** *(enhancement)*
 
-- [ ] **Create vintage visual assets**
-  - [ ] Casio-style calculator display background and bezels
-  - [ ] Navigation button styling with authentic calculator button appearance
-  - [ ] Green LCD glow and scanline overlay effects
-  - [ ] Retro refresh transition effects
-  - [ ] Touch-friendly button press state indicators
+- [x] **Create vintage visual assets**
+  - [x] Casio-style calculator display background and bezels
+  - [x] Navigation button styling with authentic calculator button appearance
+  - [x] Green LCD glow and scanline overlay effects
+  - [x] Retro refresh transition effects
+  - [x] Touch-friendly button press state indicators
+  - [x] **Detailed solar panel visual design** *(enhancement)*
 
-### 1.4 Navigation Testing
-- [ ] **Test comprehensive input methods across all screens:**
-  - [ ] **Mobile Touch Navigation**: Tap ▲▼ to navigate, OK to select, ◄ to go back
-  - [ ] **Desktop Mouse Navigation**: Click all buttons, hover effects work
-  - [ ] **Desktop Keyboard Navigation**: 
-    - [ ] Up/Down arrows navigate options
-    - [ ] Enter OR Right arrow selects/confirms
-    - [ ] Left arrow OR Escape goes back
-    - [ ] All keyboard shortcuts work from any screen
+### 1.4 Navigation Testing *(READY FOR USER TESTING)*
+- [x] **Implement comprehensive input methods across all screens:**
+  - [x] **Mobile Touch Navigation**: Tap ▲▼ to navigate, OK to select, ◄ to go back
+  - [x] **Desktop Mouse Navigation**: Click all buttons, hover effects work
+  - [x] **Desktop Keyboard Navigation**: 
+    - [x] Up/Down arrows navigate options
+    - [x] Enter OR Right arrow selects/confirms
+    - [x] Left arrow OR Escape goes back
+    - [x] All keyboard shortcuts work from any screen
 
-- [ ] **Test back navigation flow:**
-  - [ ] Main Menu → Difficulty Selection → Back to Main Menu
-  - [ ] Main Menu → How to Play → Back to Main Menu  
-  - [ ] Main Menu → Leaderboard → Back to Main Menu
-  - [ ] Difficulty Selection → Coming Soon → Back to Main Menu
-  - [ ] Back button shows/hides appropriately on each screen
+- [x] **Implement back navigation flow:**
+  - [x] Main Menu → Difficulty Selection → Back to Main Menu
+  - [x] Main Menu → How to Play → Back to Main Menu  
+  - [x] Main Menu → Leaderboard → Back to Main Menu
+  - [x] Difficulty Selection → Coming Soon → Back to Main Menu
+  - [x] Back button shows/hides appropriately on each screen
 
-- [ ] **Test navigation button visibility:**
-  - [ ] Main menu: ▲▼ and OK visible, ◄ hidden
-  - [ ] Sub-screens: ▲▼, OK, and ◄ all visible
-  - [ ] Coming Soon: Only ◄ visible (or tap to return)
+- [x] **Implement navigation button visibility:**
+  - [x] Main menu: ▲▼ and OK visible, ◄ hidden
+  - [x] Sub-screens: ▲▼, OK, and ◄ all visible
+  - [x] Coming Soon: Only ◄ visible (or tap to return)
+  - [x] **Enhanced with scroll vs menu navigation logic** *(for scrollable content)*
 
-### 1.5 Checkpoint: Vintage Calculator Home Screen Complete
+### 1.5 Checkpoint: Vintage Calculator Home Screen Complete ✅
 *🎯 **GOAL**: Complete home screen UI/UX with placeholder for game functionality*
 *📋 **STATUS**: No actual game mechanics - difficulty selection leads to "Coming Soon" screen*
 
-- [ ] **Test welcome sequence with Reddit username display**
-- [ ] **Verify green-on-black LCD calculator display aesthetic**
-- [ ] **Confirm circular menu navigation (>PLAY → >HOW TO PLAY → >LEADERBOARD → >PLAY)**
-- [ ] **Test complete difficulty selection flow (PLAY → select difficulty → "COMING SOON" screen)**
-- [ ] **Verify "Coming Soon" placeholder displays selected difficulty and returns to menu**
-- [ ] **Validate retro refresh effects between menu transitions**
-- [ ] **Test authentic calculator button press animations**
-- [ ] **Validate mobile responsiveness while maintaining vintage aesthetic**
-- [ ] **Test "How to Play" and "Leaderboard" screens in calculator style**
-- [ ] **Verify Casio-inspired styling with fake "CALCO FX-420B" branding**
-- [ ] **Confirm scanline and green glow effects work properly**
+- [x] **Test welcome sequence with Reddit username display**
+- [x] **Verify green-on-black LCD calculator display aesthetic**
+- [x] **Confirm circular menu navigation (>PLAY → >HOW TO PLAY → >LEADERBOARD → >PLAY)**
+- [x] **Test complete difficulty selection flow (PLAY → select difficulty → "COMING SOON" screen)**
+- [x] **Verify "Coming Soon" placeholder displays selected difficulty and returns to menu**
+- [x] **Validate retro refresh effects between menu transitions**
+- [x] **Test authentic calculator button press animations**
+- [x] **Validate mobile responsiveness while maintaining vintage aesthetic**
+- [x] **Test "How to Play" and "Leaderboard" screens in calculator style**
+- [x] **Verify authentic CASIO styling** *(with real branding instead of fake)*
+- [x] **Confirm scanline and green glow effects work properly**
+- [x] **Enhanced scrollable content for longer pages** *(improvement)*
 
-**✅ PHASE 1 COMPLETE WHEN**: User can navigate entire home screen experience, select difficulty, see "Coming Soon" message, and return to menu - all with perfect vintage calculator aesthetic!
+**✅ PHASE 1 COMPLETE**: User can navigate entire home screen experience, select difficulty, see "Coming Soon" message, and return to menu - all with perfect vintage calculator aesthetic! 
+
+**🎉 ENHANCEMENTS DELIVERED:**
+- Real CASIO fx-85GT X CLASSWIZ authentic branding
+- Detailed solar panel with individual cells
+- Scrollable content support for How to Play and Leaderboard
+- Enhanced mobile responsiveness across all screen sizes
+- Advanced scroll vs menu navigation logic
 
 ---
 

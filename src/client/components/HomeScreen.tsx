@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { CalculatorDisplay } from './CalculatorDisplay';
 import { MenuNavigation } from './MenuNavigation';
 import { WelcomeSequence } from './WelcomeSequence';
@@ -10,7 +10,7 @@ import { useMenuNavigation } from '../hooks/useMenuNavigation';
 import type { MenuOption, WelcomeState } from '../../shared/types/navigation';
 
 interface HomeScreenProps {
-  username?: string;
+  username?: string | undefined;
 }
 
 const MENU_LABELS: Record<MenuOption, string> = {
@@ -26,18 +26,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     isVisible: true,
     transitionDelay: 2500,
   });
+  
+  // Track if welcome sequence has been initialized to prevent infinite loops
+  const welcomeInitialized = useRef(false);
 
   // Initialize welcome sequence on mount
   useEffect(() => {
-    actions.startWelcomeSequence(username);
-    
-    // Hide welcome after delay
-    const timer = setTimeout(() => {
-      setWelcomeState(prev => ({ ...prev, isVisible: false }));
-    }, welcomeState.transitionDelay);
+    if (!welcomeInitialized.current) {
+      welcomeInitialized.current = true;
+      actions.startWelcomeSequence();
+      
+      // Hide welcome after delay
+      const timer = setTimeout(() => {
+        setWelcomeState(prev => ({ ...prev, isVisible: false }));
+      }, welcomeState.transitionDelay);
 
-    return () => clearTimeout(timer);
-  }, [username, actions, welcomeState.transitionDelay]);
+      return () => clearTimeout(timer);
+    }
+  }, [actions, welcomeState.transitionDelay]);
+
+  // Update welcome state when username changes
+  useEffect(() => {
+    setWelcomeState(prev => ({ ...prev, username: username || null }));
+  }, [username]);
 
   const renderMainMenu = () => (
     <div>
@@ -75,10 +86,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
         return <ComingSoon selectedDifficulty={state.selectedDifficulty} />;
       
       case 'HOW_TO_PLAY':
-        return <HowToPlay />;
+        return (
+          <HowToPlay 
+            scrollPosition={state.scrollPosition}
+            maxScrollPosition={state.maxScrollPosition}
+            onSetScrollBounds={actions.setScrollBounds}
+          />
+        );
       
       case 'LEADERBOARD':
-        return <Leaderboard />;
+        return (
+          <Leaderboard 
+            scrollPosition={state.scrollPosition}
+            maxScrollPosition={state.maxScrollPosition}
+            onSetScrollBounds={actions.setScrollBounds}
+          />
+        );
       
       default:
         return renderMainMenu();
@@ -86,7 +109,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 flex items-center justify-center p-4">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 flex items-center justify-center p-2 overflow-hidden">
       <CalculatorDisplay isTransitioning={state.isTransitioning}>
         {renderCurrentScreen()}
         

@@ -12,7 +12,6 @@ interface MenuNavigationProps {
 
 export const MenuNavigation: React.FC<MenuNavigationProps> = ({
   state,
-  inputMethod,
   onNavigateUp,
   onNavigateDown,
   onSelect,

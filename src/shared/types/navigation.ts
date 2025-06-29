@@ -22,6 +22,9 @@ export interface HomeScreenState {
   selectedDifficulty: DifficultyMode | null;
   showBackButton: boolean;
   isTransitioning: boolean;
+  scrollPosition: number;
+  maxScrollPosition: number;
+  isScrolling: boolean;
 }
 
 export interface WelcomeState {

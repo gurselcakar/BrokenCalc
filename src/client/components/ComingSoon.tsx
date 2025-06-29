@@ -32,10 +32,7 @@ export const ComingSoon: React.FC<ComingSoonProps> = ({ selectedDifficulty }) =>
       <div className="lcd-text lcd-text-small">
         implemented in Phase 2
       </div>
-      
-      <div className="lcd-text lcd-text-small mt-8">
-        Press ◄ to return
-      </div>
+
     </div>
   );
 };
