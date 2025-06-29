@@ -2,7 +2,7 @@
 
 This document provides a detailed implementation roadmap for BrokenCalc, organized as a checklist with clear checkpoints for incremental development and testing.
 
-## Phase 1: Foundation & Home Screen
+## Phase 1: Foundation & Vintage Calculator Home Screen
 
 ### 1.1 Project Setup & Types
 - [ ] **Define shared types** in `src/shared/types/game.ts`
@@ -11,31 +11,111 @@ This document provides a detailed implementation roadmap for BrokenCalc, organiz
   - [ ] `MathProblem` interface for problem structure
   - [ ] `ButtonMapping` interface for scrambled buttons
   - [ ] `CalculatorButton` interface for button representation
+  - [ ] `MenuOption` type for home screen navigation (`'PLAY' | 'HOW TO PLAY' | 'LEADERBOARD'`)
+  - [ ] `ScreenState` type (`'WELCOME' | 'MAIN_MENU' | 'DIFFICULTY_SELECTION' | 'GAME' | 'HOW_TO_PLAY' | 'LEADERBOARD'`)
+  - [ ] `HomeScreenState` interface for menu navigation state and welcome sequence
+  - [ ] `WelcomeState` interface for username display and transition timing
 
-### 1.2 Home Screen Implementation
+### 1.2 Vintage Calculator Display Home Screen
 - [ ] **Create `src/client/components/HomeScreen.tsx`**
-  - [ ] Difficulty selection buttons (Easy, Medium, Hard, Hardcore, God Tier)
-  - [ ] "How to Play" button/modal trigger
-  - [ ] Reddit username welcome message
-  - [ ] Arcade-style responsive design with Tailwind
-  - [ ] Mobile-first 3x5 calculator preview
+  - [ ] Full-screen Casio-style calculator display design (green-on-black LCD aesthetic)
+  - [ ] Fake brand name and FX model number (e.g., "CALCO FX-420B")
+  - [ ] Thick calculator display bezels without solar panel area
+  - [ ] Dark background with monospace font for display text
+  - [ ] Classic green text color on dark display background
+  - [ ] Mobile-responsive design maintaining calculator display proportions
+  - [ ] Touch-friendly interface while preserving vintage aesthetic
+
+- [ ] **Create `src/client/components/CalculatorDisplay.tsx`**
+  - [ ] Vintage LCD display component with thick realistic borders
+  - [ ] Scanline effects and subtle green glow for authenticity
+  - [ ] Text rendering with classic calculator dot-matrix font
+  - [ ] Responsive sizing while maintaining aspect ratio
+  - [ ] Display dimming/brightening animations
+  - [ ] Retro refresh effect for menu transitions (like old calculator screen updates)
+
+- [ ] **Create `src/client/components/WelcomeSequence.tsx`**
+  - [ ] Initial welcome message display: "WELCOME [USERNAME]"
+  - [ ] Smooth transition from welcome to menu after 2-3 seconds
+  - [ ] Authentic calculator startup sequence feel
+  - [ ] Reddit username integration with proper formatting
+
+- [ ] **Create `src/client/components/MenuNavigation.tsx`**
+  - [ ] Three-button navigation panel positioned on right inside display
+  - [ ] Up arrow (▲), OK button, Down arrow (▼) with vintage Casio-style button styling
+  - [ ] Menu cycling logic: >PLAY → >HOW TO PLAY → >LEADERBOARD → >PLAY
+  - [ ] Single menu item display with ">" prefix (e.g., ">PLAY")
+  - [ ] Keyboard navigation support (arrow keys + enter)
+  - [ ] Retro refresh effect between menu transitions
+  - [ ] Authentic calculator button press animations with depression and feedback
+  - [ ] Touch-friendly button sizes while maintaining vintage appearance
+
+- [ ] **Create `src/client/components/DifficultySelection.tsx`**
+  - [ ] Difficulty selection screen triggered after "PLAY" selection
+  - [ ] Menu options: >EASY → >MEDIUM → >HARD → >HARDCORE → >GOD TIER → >EASY
+  - [ ] Same navigation pattern as main menu
+  - [ ] Retro transition effects between difficulty options
+  - [ ] Return to main menu option
+
+- [ ] **Create `src/client/hooks/useMenuNavigation.ts`**
+  - [ ] Menu state management (current selected option)
+  - [ ] Keyboard event handlers for arrow keys and enter
+  - [ ] Circular navigation logic between menu options
+  - [ ] Menu selection action handlers
+  - [ ] Retro refresh effect triggering
+  - [ ] Navigation between main menu and difficulty selection
 
 - [ ] **Create `src/client/components/HowToPlay.tsx`**
-  - [ ] Modal component explaining game rules
-  - [ ] Difficulty-specific explanations
-  - [ ] Visual examples of button scrambling
-  - [ ] Close/dismiss functionality
+  - [ ] Full-screen overlay maintaining calculator display aesthetic
+  - [ ] Game rules displayed in vintage calculator style
+  - [ ] Difficulty-specific explanations with retro formatting
+  - [ ] Navigation instructions for display-style interface
+  - [ ] Return to menu functionality
+
+- [ ] **Create `src/client/components/Leaderboard.tsx`**
+  - [ ] Scoreboard displayed in calculator display style
+  - [ ] Top scores with vintage formatting and monospace alignment
+  - [ ] Difficulty-based filtering with calculator-style selection
+  - [ ] Return to menu functionality
 
 - [ ] **Update `src/client/App.tsx`**
-  - [ ] Router setup for Home → Game screens
-  - [ ] State management for current screen
-  - [ ] Difficulty selection handler
+  - [ ] Router setup for Home → Difficulty Selection → Game → Leaderboard screens
+  - [ ] State management for current screen, menu selection, and difficulty
+  - [ ] Menu option handlers (Play → Difficulty, How to Play, Leaderboard)
+  - [ ] Reddit username integration for welcome sequence
+  - [ ] Welcome sequence initialization on app start
 
-### 1.3 Checkpoint: Home Screen Complete
-- [ ] **Test home screen navigation**
-- [ ] **Verify mobile responsiveness**
-- [ ] **Confirm difficulty selection works**
-- [ ] **Validate "How to Play" modal**
+### 1.3 Vintage Casio-Style Styling & Assets
+- [ ] **Create `src/client/styles/vintage-calculator.css`**
+  - [ ] CSS custom properties for green-on-black LCD color scheme
+  - [ ] Thick calculator display border and bezel styles (Casio-inspired)
+  - [ ] Fake brand name and model styling ("CALCO FX-420B")
+  - [ ] Dot-matrix monospace font imports and fallbacks
+  - [ ] Retro refresh effect animation keyframes
+  - [ ] Scanline and green glow effects
+  - [ ] Mobile-responsive vintage styling with touch-friendly elements
+  - [ ] Authentic calculator button depression animations
+
+- [ ] **Create vintage visual assets**
+  - [ ] Casio-style calculator display background and bezels
+  - [ ] Navigation button styling with authentic calculator button appearance
+  - [ ] Green LCD glow and scanline overlay effects
+  - [ ] Retro refresh transition effects
+  - [ ] Touch-friendly button press state indicators
+
+### 1.4 Checkpoint: Vintage Calculator Home Screen Complete
+- [ ] **Test welcome sequence with Reddit username display**
+- [ ] **Test menu navigation with keyboard arrows**
+- [ ] **Test menu navigation with touch-friendly on-screen buttons**
+- [ ] **Verify green-on-black LCD calculator display aesthetic**
+- [ ] **Confirm circular menu navigation (>PLAY → >HOW TO PLAY → >LEADERBOARD → >PLAY)**
+- [ ] **Test difficulty selection flow (PLAY → difficulty menu → game)**
+- [ ] **Validate retro refresh effects between menu transitions**
+- [ ] **Test authentic calculator button press animations**
+- [ ] **Validate mobile responsiveness while maintaining vintage aesthetic**
+- [ ] **Test "How to Play" and "Leaderboard" screens in calculator style**
+- [ ] **Verify Casio-inspired styling with fake "CALCO FX-420B" branding**
+- [ ] **Confirm scanline and green glow effects work properly**
 
 ---
 
