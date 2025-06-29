@@ -1,38 +1,39 @@
 import React from 'react';
+import { GameScreen } from './GameScreen';
 import type { DifficultyMode } from '../../shared/types/navigation';
 
 interface ComingSoonProps {
   selectedDifficulty: DifficultyMode | null;
+  onBackToHome: () => void;
 }
 
-const DIFFICULTY_LABELS: Record<DifficultyMode, string> = {
-  easy: 'EASY MODE',
-  medium: 'MEDIUM MODE', 
-  hard: 'HARD MODE',
-  hardcore: 'HARDCORE MODE',
-  godtier: 'GOD TIER MODE',
-};
+export const ComingSoon: React.FC<ComingSoonProps> = ({ 
+  selectedDifficulty, 
+  onBackToHome 
+}) => {
+  // If we have a selected difficulty, show the game screen
+  if (selectedDifficulty) {
+    return (
+      <GameScreen 
+        difficulty={selectedDifficulty} 
+        onBackToHome={onBackToHome}
+      />
+    );
+  }
 
-export const ComingSoon: React.FC<ComingSoonProps> = ({ selectedDifficulty }) => {
+  // Fallback for when no difficulty is selected
   return (
     <div className="text-center">
       <div className="lcd-text lcd-text-large mb-6">
         COMING SOON...
       </div>
       
-      {selectedDifficulty && (
-        <div className="lcd-text mb-8">
-          {DIFFICULTY_LABELS[selectedDifficulty]}
-        </div>
-      )}
-      
       <div className="lcd-text lcd-text-small">
-        Game functionality will be
+        Please select a difficulty
       </div>
       <div className="lcd-text lcd-text-small">
-        implemented in Phase 2
+        to start the game
       </div>
-
     </div>
   );
 };

@@ -20,6 +20,28 @@
   --btn-active: #6b7280;
   --btn-text: #d1d5db;
   --btn-border: #1f2937;
+  
+  /* Calculator Button Colors */
+  --calc-btn-bg: #374151;
+  --calc-btn-hover: #4b5563;
+  --calc-btn-active: #6b7280;
+  --calc-btn-text: #d1d5db;
+  --calc-btn-border: #1f2937;
+  --calc-btn-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Number button specific */
+  --calc-btn-number-bg: #475569;
+  --calc-btn-number-hover: #64748b;
+  
+  /* Operator button specific */
+  --calc-btn-operator-bg: #dc2626;
+  --calc-btn-operator-hover: #ef4444;
+  --calc-btn-operator-text: #ffffff;
+  
+  /* Action button specific */
+  --calc-btn-action-bg: #059669;
+  --calc-btn-action-hover: #10b981;
+  --calc-btn-action-text: #ffffff;
 }
 
 /* Import dot-matrix style fonts */
@@ -288,6 +310,136 @@
   transform: translateY(-50%) scale(0.8);
 }
 
+/* Game Display Layout */
+.game-display {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 20px;
+}
+
+.game-display-timer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.game-display-equation {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.game-display-input {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.game-display-feedback {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+/* Calculator Container */
+.calculator-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Calculator Grid */
+.calculator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+  aspect-ratio: 4/5;
+}
+
+/* Calculator Button Base Styles */
+.calc-button {
+  background: var(--calc-btn-bg);
+  border: 2px solid var(--calc-btn-border);
+  border-radius: 8px;
+  color: var(--calc-btn-text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  box-shadow: 
+    0 4px 8px var(--calc-btn-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-height: 60px;
+}
+
+.calc-button:hover {
+  background: var(--calc-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 12px var(--calc-btn-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.calc-button:active {
+  background: var(--calc-btn-active);
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 4px var(--calc-btn-shadow),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Number Button Styles */
+.calc-button-number {
+  background: var(--calc-btn-number-bg);
+}
+
+.calc-button-number:hover {
+  background: var(--calc-btn-number-hover);
+}
+
+/* Operator Button Styles */
+.calc-button-operator {
+  background: var(--calc-btn-operator-bg);
+  color: var(--calc-btn-operator-text);
+}
+
+.calc-button-operator:hover {
+  background: var(--calc-btn-operator-hover);
+}
+
+/* Action Button Styles */
+.calc-button-action {
+  background: var(--calc-btn-action-bg);
+  color: var(--calc-btn-action-text);
+}
+
+.calc-button-action:hover {
+  background: var(--calc-btn-action-hover);
+}
+
+/* Disabled Button Styles */
+.calc-button-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Empty Cell Styles */
+.calc-button-empty {
+  background: transparent;
+  border: none;
+  pointer-events: none;
+}
+
 /* Retro Refresh Animation */
 @keyframes retro-refresh {
   0% { opacity: 1; }
@@ -364,6 +516,15 @@
   .lcd-text-large {
     font-size: 1.8rem;
   }
+  
+  .calc-button {
+    font-size: 1.3rem;
+    min-height: 50px;
+  }
+  
+  .calculator-grid {
+    gap: 6px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -418,6 +579,15 @@
   
   .lcd-text-large {
     font-size: 1.5rem;
+  }
+  
+  .calc-button {
+    font-size: 1.1rem;
+    min-height: 45px;
+  }
+  
+  .calculator-grid {
+    gap: 4px;
   }
 }
 
@@ -474,6 +644,15 @@
   
   .lcd-text-large {
     font-size: 1.4rem;
+  }
+  
+  .calc-button {
+    font-size: 1rem;
+    min-height: 40px;
+  }
+  
+  .calculator-grid {
+    gap: 3px;
   }
 }
 
@@ -534,6 +713,20 @@
   .lcd-text-small {
     font-size: 0.8rem;
   }
+  
+  .calc-button {
+    font-size: 0.9rem;
+    min-height: 35px;
+  }
+  
+  .calculator-grid {
+    gap: 2px;
+  }
+  
+  .game-display {
+    height: 120px;
+    margin-bottom: 10px;
+  }
 }
 
 /* Touch-friendly enhancements */
@@ -548,6 +741,15 @@
     text-shadow: 0 0 20px var(--lcd-text-bright);
     transform: scale(0.9);
   }
+  
+  .calc-button {
+    min-height: 70px;
+    font-size: 1.6rem;
+  }
+  
+  .calc-button:active {
+    transform: scale(0.95);
+  }
 }
 
 /* Keyboard focus styles */
@@ -555,6 +757,14 @@
   outline: none;
   color: var(--lcd-text-bright);
   text-shadow: 0 0 15px var(--lcd-text-bright);
+}
+
+.calc-button:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 3px var(--lcd-text),
+    0 4px 8px var(--calc-btn-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Scrollable Content */

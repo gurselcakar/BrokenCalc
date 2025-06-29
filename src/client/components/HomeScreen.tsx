@@ -58,7 +58,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       
       <div className="lcd-text text-center">
         <span className="menu-item selected">
-          &gt;{MENU_LABELS[state.selectedMenuOption]}
+          >{MENU_LABELS[state.selectedMenuOption]}
         </span>
       </div>
       
@@ -70,6 +70,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       </div>
     </div>
   );
+
+  const handleBackToHome = () => {
+    // Reset to main menu
+    actions.back();
+  };
 
   const renderCurrentScreen = () => {
     switch (state.currentScreen) {
@@ -83,7 +88,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
         return <DifficultySelection selectedDifficulty={state.selectedDifficulty} />;
       
       case 'COMING_SOON':
-        return <ComingSoon selectedDifficulty={state.selectedDifficulty} />;
+        return (
+          <ComingSoon 
+            selectedDifficulty={state.selectedDifficulty} 
+            onBackToHome={handleBackToHome}
+          />
+        );
       
       case 'HOW_TO_PLAY':
         return (
@@ -113,8 +123,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       <CalculatorDisplay isTransitioning={state.isTransitioning}>
         {renderCurrentScreen()}
         
-        {/* Navigation Buttons - Hidden during welcome */}
-        {state.currentScreen !== 'WELCOME' && (
+        {/* Navigation Buttons - Hidden during welcome and game screens */}
+        {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'COMING_SOON' && (
           <MenuNavigation
             state={state}
             inputMethod={inputMethod}
