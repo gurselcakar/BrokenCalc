@@ -15,7 +15,9 @@ export const App = () => {
 
   return (
     <>
-      <HomeScreen username={username} />
+      <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 flex items-center justify-center py-4 px-2 overflow-hidden">
+        <HomeScreen username={username} />
+      </div>
       <BoltBadge mode="white" />
     </>
   );

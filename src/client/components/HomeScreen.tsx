@@ -215,25 +215,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 flex items-center justify-center p-2 overflow-hidden">
-      <CalculatorDisplay 
-        isTransitioning={state.isTransitioning}
-        calculatorButtons={renderCalculatorButtons()}
-      >
-        {renderCurrentScreen()}
-        
-        {/* Navigation Buttons - Hidden during welcome and game screens */}
-        {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME' && (
-          <MenuNavigation
-            state={state}
-            inputMethod={inputMethod}
-            onNavigateUp={actions.navigateUp}
-            onNavigateDown={actions.navigateDown}
-            onSelect={actions.select}
-            onBack={actions.back}
-          />
-        )}
-      </CalculatorDisplay>
-    </div>
+    <CalculatorDisplay 
+      isTransitioning={state.isTransitioning}
+      calculatorButtons={renderCalculatorButtons()}
+    >
+      {renderCurrentScreen()}
+      
+      {/* Navigation Buttons - Hidden during welcome and game screens */}
+      {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME' && (
+        <MenuNavigation
+          state={state}
+          inputMethod={inputMethod}
+          onNavigateUp={actions.navigateUp}
+          onNavigateDown={actions.navigateDown}
+          onSelect={actions.select}
+          onBack={actions.back}
+        />
+      )}
+    </CalculatorDisplay>
   );
 };
