@@ -200,74 +200,144 @@ This document provides a detailed implementation roadmap for BrokenCalc, organiz
   - [ ] `MathProblem` interface for problem structure *(stores the equation like "_ + _ = 7")*
   - [ ] `ButtonMapping` interface for scrambled buttons *(maps what button "3" actually does when pressed)*
   - [ ] `CalculatorButton` interface for button representation *(defines each calculator button's properties)*
+  - [ ] `GameDisplayState` interface for LCD display layout *(timer, equation, user input positioning)*
 
 ### 2.2 Calculator UI Foundation
 - [ ] **Create `src/client/components/Calculator.tsx`**
-  - [ ] 3x5 button layout: `[⌫][÷] [7][8][9][×] [4][5][6][-] [1][2][3][+] [0][][=]`
+  - [ ] **5x4 button layout**: 
+    ```
+    [⌫] [⌫] [⌫] [÷]
+    [7] [8] [9] [×]
+    [4] [5] [6] [-]
+    [1] [2] [3] [+]
+    [ ] [0] [ ] [=]
+    ```
+  - [ ] **Delete button spans 3 cells**, **0 button with empty neighbors**
+  - [ ] **Empty cells are invisible/transparent** (part of calculator border styling)
+  - [ ] **Static frontend display** - buttons show correct labels always
   - [ ] Mobile-optimized button sizing and spacing
   - [ ] Button press animations and feedback
-  - [ ] Calculator display screen
-  - [ ] Arcade-style visual design
+  - [ ] **Vintage Casio aesthetic** matching home screen design
+  - [ ] **Touch-friendly** button sizing for mobile devices
 
 ### 2.3 Easy Mode Game Logic
 - [ ] **Create `src/client/utils/buttonScrambler.ts`**
   - [ ] `scrambleNumbers()` function (only numbers 0-9 mixed)
   - [ ] Keep operators (+, -, ×, ÷, =, ⌫) working normally
   - [ ] Generate consistent mapping for game session
+  - [ ] **Backend scrambling only** - frontend buttons display normal labels
 
 - [ ] **Create `src/client/utils/problemGenerator.ts`**
   - [ ] Generate single-digit addition problems (`_ + _ = 7`)
   - [ ] Generate single-digit subtraction problems (`_ - _ = 3`)
-  - [ ] Ensure multiple possible solutions exist
-  - [ ] Return problem with all valid solution combinations
+  - [ ] **Multiple valid solutions** supported (e.g., `3+4=7`, `5+2=7`, `6+1=7`)
+  - [ ] **Simple problem generation** - no need to pre-calculate all solutions
+  - [ ] **Smart validation** - calculate if user's equation is mathematically correct
 
 - [ ] **Create `src/client/hooks/useCalculator.ts`**
   - [ ] Manage calculator display state
   - [ ] Handle button press logic with scrambled mappings
   - [ ] Implement delete functionality
   - [ ] Track user input sequence
+  - [ ] **Validate equations on-the-fly** when user presses equals
 
 ### 2.4 Easy Mode Game Screen
 - [ ] **Create `src/client/components/GameScreen.tsx`**
-  - [ ] Display current math problem at top
-  - [ ] Integrate Calculator component
-  - [ ] Show current difficulty mode
+  - [ ] **Seamless transition** from navigation to calculator interface
+  - [ ] **"GAME START" message** displays for **2 seconds exactly**
+  - [ ] **Timer begins counting down from 2:00** after "GAME START" message
+  - [ ] **Hide navigation buttons** during gameplay (▲▼ OK ◄ disappear)
+  - [ ] Integrate Calculator component below LCD display
   - [ ] Handle game start/reset logic
+  - [ ] **Smooth visual transition** from menu to calculator layout
 
-- [ ] **Create `src/client/components/Timer.tsx`**
-  - [ ] 2-minute countdown display
-  - [ ] Visual progress indicator
-  - [ ] Time warning states (30s, 10s remaining)
-  - [ ] Timeout handler trigger
+- [ ] **Create `src/client/components/GameDisplay.tsx`**
+  - [ ] **LCD display layout** for game mode:
+    - [ ] **Timer**: Top-left corner (2:00 countdown)
+    - [ ] **Equation**: Top-center (`_ + _ = 7`)
+    - [ ] **User Input**: Bottom-right (like calculator display)
+    - [ ] **Feedback Area**: Bottom-left corner (for "INCORRECT" messages)
+  - [ ] **Real-time equation building**: Shows `3` → `3+` → `3+4` as user types
+  - [ ] **Calculator-style result display**: Shows calculated result when `=` pressed
+  - [ ] **Vintage calculator aesthetic** consistent with home screen
+  - [ ] **Real-time updates** as user presses buttons
 
 - [ ] **Create `src/client/hooks/useGameLogic.ts`**
   - [ ] Manage overall game state
   - [ ] Handle answer validation logic
   - [ ] Implement win condition checking
-  - [ ] Time management and timeout handling
+  - [ ] **2-minute timer** management and timeout handling
+  - [ ] **Timer stops immediately** when correct answer is submitted
+  - [ ] **Calculator-style equation evaluation** when `=` is pressed
+  - [ ] **Wrong answer feedback flow**: Show result → Show "INCORRECT" in bottom-left → Clear on next keypress
+  - [ ] **Victory condition flow**: Show result → Stop timer → Show victory screen (smooth transition)
 
-### 2.5 Easy Mode Special Features
-- [ ] **Create `src/client/components/DiscoveryLog.tsx`**
-  - [ ] Modal showing discovered button mappings
-  - [ ] Track which buttons have been pressed
-  - [ ] Show "Button X actually does Y" entries
-  - [ ] Toggle visibility button in game screen
+### 2.5 Easy Mode Feedback System
+- [ ] **Create `src/client/components/FeedbackDisplay.tsx`**
+  - [ ] **Wrong answer feedback flow**:
+    - [ ] **Step 1**: Show calculated result in bottom-right (like real calculator)
+    - [ ] **Step 2**: Display "INCORRECT" message in **bottom-left corner**
+    - [ ] **Step 3**: Message persists until **user presses any key**
+    - [ ] **Step 4**: Clear message and allow continued gameplay
+  - [ ] **Visual feedback** with vintage calculator styling
+  - [ ] **Real calculator behavior** - authentic feel and timing
+  - [ ] **No discovery log** - removed from scope per user request
 
 ### 2.6 Easy Mode Game End
+- [ ] **Create `src/client/components/VictoryScreen.tsx`**
+  - [ ] **Victory screen within LCD display** (seamless flow maintained)
+  - [ ] **Calculator buttons remain visible** during victory screen
+  - [ ] **Victory display flow**:
+    - [ ] **Step 1**: Show correct calculated result in bottom-right
+    - [ ] **Step 2**: Timer stops immediately
+    - [ ] **Step 3**: Smooth transition to victory screen within LCD
+  - [ ] **Win celebration** with vintage calculator aesthetic
+  - [ ] Show final score (remaining seconds when timer stopped)
+  - [ ] Display the solved equation
+  - [ ] **Navigation options within LCD**: "Play Again" and "Back to Home" 
+  - [ ] **Buttons disappear only when navigating back to home screen**
+  - [ ] **Mode completion celebration** with retro effects
+
 - [ ] **Create `src/client/components/GameOver.tsx`**
-  - [ ] Win/lose result display
-  - [ ] Show final score (remaining seconds)
-  - [ ] Display problem and user's solution
-  - [ ] "Play Again" and "Back to Home" buttons
-  - [ ] Mode completion celebration
+  - [ ] **Timeout screen** when 2 minutes expire
+  - [ ] Show "TIME UP" message in vintage calculator style
+  - [ ] Display the unsolved problem
+  - [ ] "Try Again" and "Back to Home" buttons
+  - [ ] **Consistent styling** with rest of calculator interface
 
 ### 2.7 Checkpoint: Easy Mode Complete
 - [ ] **Test complete easy mode gameplay flow**
+  - [ ] Menu navigation → Difficulty selection → **"GAME START" (2 seconds)** → **Timer starts (2:00)** → Calculator interface
+  - [ ] **Seamless transition** from navigation to game mode
+  - [ ] **Smooth visual flow**: Home screen → Game screen → Victory screen → Home screen
+  - [ ] **Calculator-like experience**: Authentic equation building and result display
 - [ ] **Verify button scrambling works correctly**
+  - [ ] **Frontend buttons display normal labels** (1,2,3...)
+  - [ ] **Backend properly scrambles** number inputs only
+  - [ ] **Operators work normally** (+, -, ×, ÷, =, ⌫)
 - [ ] **Confirm problem generation and validation**
-- [ ] **Test discovery log functionality**
+  - [ ] **Single-digit addition/subtraction** problems generated
+  - [ ] **Multiple valid solutions** accepted correctly
+  - [ ] **Math validation** works properly on equals press
+- [ ] **Test feedback system**
+  - [ ] **Wrong answer flow**: Result displayed → "INCORRECT" in bottom-left → Clears on keypress
+  - [ ] **Victory flow**: Result displayed → Timer stops → Victory screen within LCD
+  - [ ] **Real calculator behavior**: Authentic timing and visual feedback
+  - [ ] **No discovery log** (removed from scope)
 - [ ] **Validate win/lose conditions**
+  - [ ] **Correct answer flow**: Result shown → Timer stops immediately → Victory screen
+  - [ ] **Timer expiration** triggers game over screen
+  - [ ] **Proper score calculation** (remaining seconds when timer stopped)
+  - [ ] **Victory screen within LCD** maintains seamless experience
+  - [ ] **Calculator buttons remain visible** until returning to home screen
 - [ ] **Test timer and timeout behavior**
+  - [ ] **"GAME START" message** displays for exactly 2 seconds
+  - [ ] **2-minute countdown** begins after "GAME START" message
+  - [ ] **Timer stops immediately** when correct answer submitted
+  - [ ] **LCD display layout** (timer top-left, equation top-center, input bottom-right, feedback bottom-left)
+  - [ ] **Equation building display** shows real-time user input (`3` → `3+` → `3+4`)
+  - [ ] **Calculator result display** shows calculated value when `=` pressed
+  - [ ] **Timeout handling** shows appropriate game over screen
 
 ---
 

@@ -112,7 +112,7 @@ export const HowToPlay: React.FC<HowToPlayProps> = ({
           • Look for patterns in scrambling
         </div>
         <div className="lcd-text lcd-text-small mb-3">
-          • Use the discovery log (Easy mode)
+          • Remember which buttons work correctly
         </div>
         <div className="lcd-text lcd-text-small mb-3">
           • Work backwards from the answer

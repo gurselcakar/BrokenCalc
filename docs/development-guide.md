@@ -80,26 +80,39 @@ The project follows the Devvit architecture with three main components:
 - **Time Pressure**: 2 minutes to solve ONE problem
 - **Victory Condition**: Press `=` with correct answer to win immediately
 
-### Game Flow
-1. **Home Screen**: Difficulty selection, How to Play, (Leaderboard if time allows)
-2. **Game Session**: Single problem displayed, 2-minute countdown
-3. **Button Discovery**: Players learn mappings through calculator experimentation
-4. **Win Condition**: Solve the problem correctly before time runs out
-5. **Scoring**: Purely time-based (remaining seconds = final score)
-6. **Time-Out**: Calculator displays silly message, then game over screen
+### Game Flow (Seamless Experience)
+1. **Vintage Calculator Home Screen** ✅ **(PHASE 1 COMPLETE)**
+   - Welcome sequence with Reddit username
+   - Menu navigation (PLAY → HOW TO PLAY → LEADERBOARD)
+   - Difficulty selection with vintage calculator aesthetic
+   - All within authentic CASIO fx-85GT X CLASSWIZ display
+2. **Game Transition**: "GAME START" message (2 seconds) → Timer starts (2:00)
+3. **Game Session**: 
+   - **LCD Layout**: Timer (top-left), Equation (top-center), Input (bottom-right), Feedback (bottom-left)
+   - **Real-time equation building**: Shows `3` → `3+` → `3+4` as user types
+   - Navigation buttons disappear during gameplay
+4. **Wrong Answer Flow**: Result displayed → "INCORRECT" in bottom-left → Clears on keypress
+5. **Victory Flow**: Result displayed → Timer stops immediately → Victory screen within LCD
+6. **Seamless Flow**: All screens within LCD display maintaining calculator aesthetic
 
 ### Difficulty Levels & Scrambling Rules
 
-**Problem Display**: Shows at top of screen (e.g., `_ + _ = 2`)
+**LCD Display Layout**: 
+- **Timer**: Top-left corner (2:00 countdown)
+- **Equation**: Top-center (e.g., `_ + _ = 7`)
+- **User Input**: Bottom-right (real-time equation building: `3` → `3+` → `3+4`)
+- **Feedback**: Bottom-left corner ("INCORRECT" messages)
+
 **Answer Method**: Type full operation (number + operator + number) then press `=`
-**Calculator Display**: Works like normal calculator - shows what you type, has delete button
+**Calculator Display**: Shows equation building like real calculator, with authentic result display
 
 #### **Easy Mode** 
 - **Scrambled**: Only numbers (0-9) mixed among themselves
 - **Normal**: All operators (+, -, ×, ÷), equals, delete work as expected
-- **Extra Feature**: Discovery log modal showing learned button mappings
+- **~~Extra Feature~~**: ~~Discovery log modal~~ **(REMOVED FROM SCOPE)**
 - **Problems**: Single digit addition/subtraction only (e.g., `_ + _ = 7`, `_ - _ = 3`)
 - **Operations**: Only `+` and `-` used
+- **Feedback**: Wrong answers show "INCORRECT" in bottom-left corner until next keypress
 
 #### **Medium Mode**
 - **Scrambled**: Numbers (0-9) mixed among themselves, operators (+, -, ×, ÷) mixed among themselves  
@@ -125,31 +138,56 @@ The project follows the Devvit architecture with three main components:
 - **Purpose**: Hilarious Easter egg for brave souls
 
 ### Core Features (Priority Order)
-1. **Simple Calculator Layout**: 3x5 mobile-friendly grid
-2. **Button Scrambling**: Mode-specific random mappings
-3. **Problem Generation**: Math equations with multiple solutions
-4. **Timer System**: 2-minute countdown with silly time-out messages
-5. **Scoring**: Time-based (remaining seconds = score)
-6. **Reddit-Style UI**: Arcade-y theme with username welcome
+1. **✅ Vintage Calculator Home Screen** *(Phase 1 Complete)*
+   - Authentic CASIO fx-85GT X CLASSWIZ design with solar panel
+   - Green-on-black LCD aesthetic with scanlines and glow effects
+   - Multi-platform navigation (touch, mouse, keyboard)
+   - Scrollable content for How to Play and Leaderboard
+2. **5x4 Calculator Layout**: Mobile-friendly grid with vintage styling
+3. **Button Scrambling**: Mode-specific random mappings (backend only)
+4. **Problem Generation**: Math equations with multiple solutions
+5. **Timer System**: 2-minute countdown with "GAME START" sequence
+6. **Seamless Experience**: All within LCD display for smooth flow
+7. **Real Calculator Behavior**: Authentic equation building and feedback
 
-### Proposed Calculator Layout (Mobile-Optimized)
+### Calculator Layout (Mobile-Optimized 5x4 Grid)
 ```
-[⌫]         [÷]
+[⌫] [⌫] [⌫] [÷]
 [7] [8] [9] [×]
 [4] [5] [6] [-]
 [1] [2] [3] [+]
-    [0]     [=]
+[ ] [0] [ ] [=]
 ```
-Clean, thumb-friendly, all essential buttons only.
+- **Delete button spans 3 cells** for easy thumb access
+- **0 button centered with empty neighbors** for clean layout
+- **Static frontend display** - buttons show correct labels always
+- **Backend scrambling** - actual button behavior scrambled server-side
+- **Vintage Casio aesthetic** matching home screen design
 
 ## Implementation Phases (48-Hour Timeline)
 
-### Phase 1: Core Game Structure (Day 1 - Hours 1-12)
+### ✅ Phase 1: Vintage Calculator Home Screen (COMPLETE)
+**Status: IMPLEMENTED AND TESTED**
+**Files created:**
+- ✅ `src/client/components/HomeScreen.tsx` - Main home screen with menu navigation
+- ✅ `src/client/components/CalculatorDisplay.tsx` - Vintage LCD display with CASIO branding
+- ✅ `src/client/components/WelcomeSequence.tsx` - Username welcome with authentic startup
+- ✅ `src/client/components/MenuNavigation.tsx` - Multi-platform navigation controls
+- ✅ `src/client/components/DifficultySelection.tsx` - Game difficulty selection
+- ✅ `src/client/components/ComingSoon.tsx` - Placeholder for game functionality
+- ✅ `src/client/components/HowToPlay.tsx` - Scrollable game instructions
+- ✅ `src/client/components/Leaderboard.tsx` - Scrollable leaderboard display
+- ✅ `src/client/components/ScrollableContent.tsx` - Reusable scrolling wrapper
+- ✅ `src/client/hooks/useMenuNavigation.ts` - Complete navigation state management
+- ✅ `src/client/styles/vintage-calculator.css` - Authentic Casio styling
+- ✅ `src/shared/types/navigation.ts` - All navigation and screen types
+
+### Phase 2: Easy Mode Implementation (CURRENT FOCUS)
 **Priority: MUST HAVE**
 **Files to create/modify:**
-- `src/client/components/Calculator.tsx` - Main calculator with scrambled buttons
-- `src/client/components/GameScreen.tsx` - Game session interface
-- `src/client/components/HomeScreen.tsx` - Start screen
+- `src/client/components/Calculator.tsx` - 5x4 calculator with vintage styling
+- `src/client/components/GameScreen.tsx` - Seamless transition to calculator interface
+- `src/client/components/GameDisplay.tsx` - LCD layout for game mode
 - `src/shared/types/game.ts` - Game state and problem types
 
 **Core functionality:**
@@ -172,7 +210,7 @@ interface GameState {
   calculatorDisplay: string;
   timeRemaining: number; // 120 seconds
   gameStatus: 'playing' | 'won' | 'timeup';
-  discoveredMappings: string[]; // For easy mode discovery log
+  // discoveredMappings: string[]; // REMOVED - No discovery log in final design
   finalScore?: number; // Set when game ends
 }
 
@@ -193,14 +231,16 @@ interface CalculatorButton {
 }
 ```
 
-### Phase 2: Game Logic & Scrambling (Day 1 - Hours 13-24)
+### Phase 2 Continued: Game Logic & Scrambling
 **Priority: MUST HAVE**
 **Files to create/modify:**
-- `src/client/hooks/useGameLogic.ts` - Game state management
-- `src/client/utils/problemGenerator.ts` - Math problem creation with multiple solutions
-- `src/client/utils/buttonScrambler.ts` - Mode-specific scrambling logic
-- `src/client/components/Timer.tsx` - Countdown display
-- `src/client/components/DiscoveryLog.tsx` - Easy mode button mapping modal
+- `src/client/hooks/useGameLogic.ts` - Game state with seamless flow management
+- `src/client/utils/problemGenerator.ts` - Math problems with smart validation
+- `src/client/utils/buttonScrambler.ts` - Backend-only scrambling logic
+- `src/client/components/FeedbackDisplay.tsx` - Wrong answer feedback system
+- `src/client/components/VictoryScreen.tsx` - Victory screen within LCD display
+- `src/client/components/GameOver.tsx` - Timeout screen with vintage styling
+- ~~`src/client/components/DiscoveryLog.tsx`~~ - **(REMOVED FROM SCOPE)**
 
 **Key Scrambling Logic:**
 ```typescript
@@ -306,39 +346,75 @@ GET  /api/problems/generate   // Generate new math problem for current mode
 
 3. **Test in production** on your subreddit
 
-## Final Project Structure (48-Hour Build)
+## Current Project Structure
 
 ```
 src/
 ├── client/
 │   ├── components/
-│   │   ├── HomeScreen.tsx          // Game mode selection + how to play
-│   │   ├── GameScreen.tsx          // Main game interface
-│   │   ├── Calculator.tsx          // Calculator with scrambled buttons
-│   │   ├── Timer.tsx               // 2-minute countdown
-│   │   ├── GameOver.tsx            // End game results
-│   │   ├── DiscoveryLog.tsx        // Easy mode button mapping modal
-│   │   └── Leaderboard.tsx         // High scores (if time allows)
+│   │   ├── HomeScreen.tsx          // ✅ Main home screen with menu navigation
+│   │   ├── CalculatorDisplay.tsx   // ✅ Vintage LCD display with CASIO branding
+│   │   ├── WelcomeSequence.tsx     // ✅ Username welcome with startup sequence
+│   │   ├── MenuNavigation.tsx      // ✅ Multi-platform navigation controls
+│   │   ├── DifficultySelection.tsx // ✅ Game difficulty selection screen
+│   │   ├── ComingSoon.tsx          // ✅ Placeholder for game functionality
+│   │   ├── HowToPlay.tsx           // ✅ Scrollable game instructions
+│   │   ├── Leaderboard.tsx         // ✅ Scrollable leaderboard display
+│   │   ├── ScrollableContent.tsx   // ✅ Reusable scrolling wrapper
+│   │   ├── GameScreen.tsx          // 🔲 Seamless transition to calculator interface
+│   │   ├── Calculator.tsx          // 🔲 5x4 calculator with vintage styling
+│   │   ├── GameDisplay.tsx         // 🔲 LCD layout for game mode
+│   │   ├── FeedbackDisplay.tsx     // 🔲 Wrong answer feedback system
+│   │   ├── VictoryScreen.tsx       // 🔲 Victory screen within LCD display
+│   │   └── GameOver.tsx            // 🔲 Timeout screen with vintage styling
 │   ├── hooks/
-│   │   ├── useGameLogic.ts         // Game state management
-│   │   └── useCalculator.ts        // Calculator display logic
+│   │   ├── useMenuNavigation.ts    // ✅ Complete navigation state management
+│   │   ├── useGameLogic.ts         // 🔲 Game state with seamless flow management
+│   │   └── useCalculator.ts        // 🔲 Calculator display logic with scrambling
+│   ├── styles/
+│   │   └── vintage-calculator.css  // ✅ Authentic Casio styling with responsive design
 │   ├── utils/
-│   │   ├── buttonScrambler.ts      // Mode-specific scrambling
-│   │   ├── problemGenerator.ts     // Math problem creation
-│   │   └── scoring.ts              // Score calculation
-│   └── App.tsx                     // Main app router
+│   │   ├── buttonScrambler.ts      // 🔲 Backend-only scrambling logic
+│   │   ├── problemGenerator.ts     // 🔲 Math problems with smart validation
+│   │   └── scoring.ts              // 🔲 Score calculation (later phases)
+│   ├── assets/                     // ✅ Bolt badge assets
+│   ├── App.tsx                     // ✅ Main app with HomeScreen integration
+│   ├── BoltBadge.tsx              // ✅ Bolt branding component
+│   ├── global.ts                   // ✅ Global type definitions
+│   ├── index.css                   // ✅ Global styles
+│   ├── main.tsx                    // ✅ React app entry point
+│   └── module.d.ts                // ✅ Module declarations
 ├── server/
 │   ├── api/
-│   │   ├── game.ts                 // Game session endpoints
-│   │   ├── problems.ts             // Problem generation
-│   │   └── scores.ts               // Leaderboard (if time allows)
-│   └── index.ts
+│   │   ├── game.ts                 // 🔲 Game session endpoints
+│   │   ├── problems.ts             // 🔲 Problem generation
+│   │   └── scores.ts               // 🔲 Leaderboard (later phases)
+│   └── index.ts                    // 🔲 Express server setup
 ├── shared/
 │   └── types/
-│       └── game.ts                 // All shared interfaces
+│       ├── navigation.ts           // ✅ All navigation and screen types
+│       └── game.ts                 // 🔲 Game state and problem types
 └── devvit/
-    └── main.tsx                    // Reddit post integration
+    └── main.tsx                    // ✅ Reddit post integration (basic setup)
 ```
+
+**Legend:**
+- ✅ **Implemented** (Phase 1 Complete)
+- 🔲 **To Implement** (Phase 2 Focus)
+
+### Key Files Status:
+
+#### **✅ Phase 1 Complete (11 components + styling)**
+All home screen navigation, vintage calculator display, and user experience flow
+
+#### **🔲 Phase 2 Remaining (10 files)**
+Game mechanics, calculator logic, and backend integration
+
+#### **📁 Additional Structure:**
+- `assets/` - Bolt badge branding assets
+- `docs/` - Implementation plan, development guide, cleanup guide
+- `tools/` - TypeScript configuration base
+- Configuration files: `package.json`, `eslint.config.js`, `devvit.yaml`
 
 ## Resources
 

@@ -136,5 +136,3 @@ The judges will evaluate submissions based on:
 ✅ **Endlessly Shareable**: "You have to try this broken calculator!"  
 
 ---
-
-*BrokenCalc: Where 2+2 might equal fish, but solving it makes you feel like a genius!* 🧮✨🐟 
