@@ -201,17 +201,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     }
   };
 
-  // Render calculator buttons when in game mode
+  // Render calculator buttons - always visible but disabled when no active game
   const renderCalculatorButtons = () => {
-    if (state.currentScreen === 'GAME' && !showGameStart && gameStarted && gameLogicResult.gameState) {
-      return (
-        <Calculator 
-          onButtonPress={handleGameButtonPress}
-          disabled={gameLogicResult.gameState.gameStatus !== 'playing'}
-        />
-      );
-    }
-    return null;
+    // Determine if buttons should be disabled
+    const isGameActive = state.currentScreen === 'GAME' && 
+                        !showGameStart && 
+                        gameStarted && 
+                        gameLogicResult.gameState && 
+                        gameLogicResult.gameState.gameStatus === 'playing';
+
+    return (
+      <Calculator 
+        onButtonPress={handleGameButtonPress}
+        disabled={!isGameActive}
+      />
+    );
   };
 
   return (
