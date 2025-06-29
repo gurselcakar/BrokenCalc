@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { GameState, DifficultyMode } from '../../shared/types/game';
+import type { GameState } from '../../shared/types/game';
+import type { DifficultyMode } from '../../shared/types/navigation';
 import { generateButtonMapping } from '../utils/buttonScrambler';
 import { generateProblem, validateEquation } from '../utils/problemGenerator';
 
@@ -11,7 +12,7 @@ interface UseGameLogicProps {
 export const useGameLogic = ({ difficulty, onGameEnd }: UseGameLogicProps) => {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Initialize game
   const initializeGame = useCallback(() => {
@@ -71,7 +72,7 @@ export const useGameLogic = ({ difficulty, onGameEnd }: UseGameLogicProps) => {
         clearInterval(timerRef.current);
       }
     };
-  }, [gameState?.gameStatus, onGameEnd]);
+  }, [gameState, onGameEnd]);
 
   // Handle equation completion from calculator
   const handleEquationComplete = useCallback((equation: string, result: number) => {

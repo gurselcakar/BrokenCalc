@@ -1,5 +1,10 @@
 // Game types and data structures for BrokenCalc
 
+// Import difficulty mode from navigation types
+import type { DifficultyMode } from './navigation';
+
+
+
 // Basic response type for API calls
 export type ApiResponse<T> = 
   | { status: 'success' } & T
@@ -51,6 +56,3 @@ export interface GameDisplayState {
   showResult: boolean; // Show calculated result
   result?: number; // Calculated result to display
 }
-
-// Import difficulty mode from navigation types
-export type { DifficultyMode } from './navigation';

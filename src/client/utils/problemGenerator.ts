@@ -1,4 +1,5 @@
-import type { MathProblem, DifficultyMode } from '../../shared/types/game';
+import type { MathProblem } from '../../shared/types/game';
+import type { DifficultyMode } from '../../shared/types/navigation';
 
 /**
  * Generate a math problem based on difficulty mode
@@ -65,7 +66,7 @@ const generateMediumProblem = (): MathProblem => {
       return generateEasyProblem(); // Same as easy for addition
     case '-':
       return generateEasyProblem(); // Same as easy for subtraction
-    case '×':
+    case '×': {
       // Multiplication: single digits, result up to 81
       const factor1 = Math.floor(Math.random() * 9) + 1; // 1-9
       const factor2 = Math.floor(Math.random() * 9) + 1; // 1-9
@@ -78,7 +79,8 @@ const generateMediumProblem = (): MathProblem => {
         possibleSolutions: solutions,
         difficulty: 'medium',
       };
-    case '÷':
+    }
+    case '÷': {
       // Division: ensure clean division
       const divisor = Math.floor(Math.random() * 9) + 1; // 1-9
       const quotient = Math.floor(Math.random() * 9) + 1; // 1-9
@@ -91,6 +93,7 @@ const generateMediumProblem = (): MathProblem => {
         possibleSolutions: divSolutions,
         difficulty: 'medium',
       };
+    }
     default:
       return generateEasyProblem();
   }
@@ -173,7 +176,7 @@ const generateGodTierProblem = (): MathProblem => {
     },
   ];
   
-  const problem = godTierProblems[Math.floor(Math.random() * godTierProblems.length)];
+  const problem = godTierProblems[Math.floor(Math.random() * godTierProblems.length)]!;
   
   return {
     ...problem,

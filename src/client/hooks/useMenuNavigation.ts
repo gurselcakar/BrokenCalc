@@ -291,6 +291,23 @@ export const useMenuNavigation = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [state.isTransitioning, state.showBackButton, handleNavigation, handleSelect, handleBack]);
 
+  // Set screen directly
+  const setScreen = useCallback((screen: ScreenState) => {
+    setState(prev => ({
+      ...prev,
+      currentScreen: screen,
+      showBackButton: screen !== 'MAIN_MENU' && screen !== 'WELCOME',
+      isTransitioning: true,
+      scrollPosition: 0,
+      maxScrollPosition: 0,
+    }));
+
+    // Reset transition state
+    setTimeout(() => {
+      setState(prev => ({ ...prev, isTransitioning: false }));
+    }, 300);
+  }, []);
+
   return {
     state,
     inputMethod,
@@ -303,6 +320,7 @@ export const useMenuNavigation = () => {
       setScrollBounds,
       scrollUp: () => scrollContent('UP'),
       scrollDown: () => scrollContent('DOWN'),
+      setScreen,
     },
   };
 };

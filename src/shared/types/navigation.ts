@@ -9,6 +9,7 @@ export type ScreenState =
   | 'MAIN_MENU' 
   | 'DIFFICULTY_SELECTION' 
   | 'COMING_SOON' 
+  | 'GAME'
   | 'HOW_TO_PLAY' 
   | 'LEADERBOARD';
 

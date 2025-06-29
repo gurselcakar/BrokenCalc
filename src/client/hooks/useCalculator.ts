@@ -79,8 +79,8 @@ export const useCalculator = ({
       return {
         display: newDisplay,
         userInput: newUserInput,
-        lastResult: newLastResult,
         showResult: newShowResult,
+        ...(newLastResult !== undefined && { lastResult: newLastResult }),
       };
     });
   }, [buttonMapping, onEquationComplete, disabled]);

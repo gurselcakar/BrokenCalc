@@ -1,4 +1,5 @@
-import type { ButtonMapping, DifficultyMode } from '../../shared/types/game';
+import type { ButtonMapping } from '../../shared/types/game';
+import type { DifficultyMode } from '../../shared/types/navigation';
 
 /**
  * Generate scrambled button mappings based on difficulty mode
@@ -36,13 +37,13 @@ const scrambleNumbers = (): { [key: string]: string } => {
   // Fisher-Yates shuffle algorithm
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
   }
   
   // Create mapping from original to scrambled
   const mapping: { [key: string]: string } = {};
   numbers.forEach((original, index) => {
-    mapping[original] = shuffled[index];
+    mapping[original] = shuffled[index]!;
   });
   
   return mapping;
@@ -58,12 +59,12 @@ const scrambleOperators = (): { [key: string]: string } => {
   // Fisher-Yates shuffle
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
   }
   
   const mapping: { [key: string]: string } = {};
   operators.forEach((original, index) => {
-    mapping[original] = shuffled[index];
+    mapping[original] = shuffled[index]!;
   });
   
   return mapping;
@@ -81,7 +82,7 @@ const scrambleNumbersAndOperators = (): ButtonMapping => {
   // Fisher-Yates shuffle
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
   }
   
   // Create separate mappings for numbers and operators
@@ -92,13 +93,13 @@ const scrambleNumbersAndOperators = (): ButtonMapping => {
   
   // Map numbers
   numbers.forEach(num => {
-    numberMapping[num] = shuffled[shuffleIndex];
+    numberMapping[num] = shuffled[shuffleIndex]!;
     shuffleIndex++;
   });
   
   // Map operators
   operators.forEach(op => {
-    operatorMapping[op] = shuffled[shuffleIndex];
+    operatorMapping[op] = shuffled[shuffleIndex]!;
     shuffleIndex++;
   });
   
@@ -121,7 +122,7 @@ const scrambleEverything = (): ButtonMapping => {
   // Fisher-Yates shuffle
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
   }
   
   const numberMapping: { [key: string]: string } = {};
@@ -132,19 +133,19 @@ const scrambleEverything = (): ButtonMapping => {
   
   // Map numbers
   numbers.forEach(num => {
-    numberMapping[num] = shuffled[shuffleIndex];
+    numberMapping[num] = shuffled[shuffleIndex]!;
     shuffleIndex++;
   });
   
   // Map operators
   operators.forEach(op => {
-    operatorMapping[op] = shuffled[shuffleIndex];
+    operatorMapping[op] = shuffled[shuffleIndex]!;
     shuffleIndex++;
   });
   
   // Map actions (equals button)
   actions.forEach(action => {
-    actionMapping[action] = shuffled[shuffleIndex];
+    actionMapping[action] = shuffled[shuffleIndex]!;
     shuffleIndex++;
   });
   
@@ -168,12 +169,12 @@ const scrambleEverythingIncludingDisplay = (): ButtonMapping => {
   // Shuffle display values
   for (let i = shuffledDisplay.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffledDisplay[i], shuffledDisplay[j]] = [shuffledDisplay[j], shuffledDisplay[i]];
+    [shuffledDisplay[i], shuffledDisplay[j]] = [shuffledDisplay[j]!, shuffledDisplay[i]!];
   }
   
   // Map each actual value to a different display value
   allValues.forEach((value, index) => {
-    displayMapping[value] = shuffledDisplay[index];
+    displayMapping[value] = shuffledDisplay[index]!;
   });
   
   return {
@@ -196,7 +197,22 @@ export const getActualValue = (buttonId: string, mapping: ButtonMapping): string
     return mapping.numbers[buttonId] || buttonId;
   }
   
-  // Check if it's an operator or action
+  // Convert text-based operator IDs to mathematical notation
+  const operatorMap: { [key: string]: string } = {
+    'add': '+',
+    'subtract': '-',
+    'multiply': '×',
+    'divide': '÷',
+    'equals': '='
+  };
+  
+  // Check if it's a text-based operator ID
+  if (operatorMap[buttonId]) {
+    const mathSymbol = operatorMap[buttonId];
+    return mapping.operators[mathSymbol] || mathSymbol;
+  }
+  
+  // Check if it's already a mathematical symbol
   if (['+', '-', '×', '÷', '='].includes(buttonId)) {
     return mapping.operators[buttonId] || buttonId;
   }

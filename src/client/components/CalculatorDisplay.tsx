@@ -3,12 +3,14 @@ import '../styles/vintage-calculator.css';
 
 interface CalculatorDisplayProps {
   children: React.ReactNode;
+  calculatorButtons?: React.ReactNode;
   isTransitioning?: boolean;
   className?: string;
 }
 
 export const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
   children,
+  calculatorButtons,
   isTransitioning = false,
   className = '',
 }) => {
@@ -34,6 +36,13 @@ export const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
       <div className={`lcd-display ${isTransitioning ? 'retro-refresh' : ''} ${className}`}>
         {children}
       </div>
+
+      {/* Calculator Buttons Area */}
+      {calculatorButtons && (
+        <div className="calculator-buttons-area">
+          {calculatorButtons}
+        </div>
+      )}
     </div>
   );
 };

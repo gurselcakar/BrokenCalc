@@ -90,15 +90,13 @@ export const Calculator: React.FC<CalculatorProps> = ({
   );
 
   return (
-    <div className={`calculator-container ${className}`}>
-      <div className="calculator-grid">
-        {/* Render all buttons */}
-        {CALCULATOR_BUTTONS.map(renderButton)}
-        
-        {/* Render empty cells for row 5 positions 0 and 2 */}
-        {renderEmptyCell(4, 0)}
-        {renderEmptyCell(4, 2)}
-      </div>
+    <div className={`calculator-grid ${className}`}>
+      {/* Render all buttons */}
+      {CALCULATOR_BUTTONS.map(renderButton)}
+      
+      {/* Render empty cells for row 5 positions 0 and 2 */}
+      {renderEmptyCell(4, 0)}
+      {renderEmptyCell(4, 2)}
     </div>
   );
 };
