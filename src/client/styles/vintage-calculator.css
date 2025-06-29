@@ -393,7 +393,9 @@
   width: 100%;
   height: 100%;
   min-height: 48px;
-  aspect-ratio: 1;
+  padding: 4px;
+  line-height: 1;
+  text-align: center;
 }
 
 .calc-button:hover {
@@ -439,11 +441,6 @@
 
 .calc-button-action:hover {
   background: var(--calc-btn-action-hover);
-}
-
-/* Delete button exception - spans 3 columns but maintains row height */
-.calc-button[style*="span 3"] {
-  aspect-ratio: 3/1;
 }
 
 /* Disabled Button Styles */
@@ -540,6 +537,7 @@
   .calc-button {
     font-size: 1.2rem;
     min-height: 44px;
+    padding: 3px;
   }
   
   .calculator-buttons-area {
@@ -608,6 +606,7 @@
   .calc-button {
     font-size: 1.1rem;
     min-height: 40px;
+    padding: 2px;
   }
   
   .calculator-buttons-area {
@@ -677,6 +676,7 @@
   .calc-button {
     font-size: 1rem;
     min-height: 36px;
+    padding: 2px;
   }
   
   .calculator-buttons-area {
@@ -749,6 +749,7 @@
   .calc-button {
     font-size: 0.9rem;
     min-height: 32px;
+    padding: 1px;
   }
   
   .calculator-buttons-area {
@@ -781,6 +782,7 @@
   .calc-button {
     font-size: 1.5rem;
     min-height: 52px;
+    padding: 6px;
   }
   
   .calc-button:active {
