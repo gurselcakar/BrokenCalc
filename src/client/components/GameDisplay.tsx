@@ -1,9 +1,58 @@
 import React from 'react';
 import type { GameState } from '../../shared/types/game';
+import type { WinOption } from '../../shared/types/navigation';
 
 interface GameDisplayProps {
   gameState: GameState;
 }
+
+const WinDisplay: React.FC<{
+  finalScore: number;
+  currentDifficulty: string;
+  selectedOption: WinOption;
+}> = ({ finalScore, currentDifficulty, selectedOption }) => {
+  const getDifficultyLabel = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy': return 'EASY';
+      case 'medium': return 'MEDIUM';
+      case 'hard': return 'HARD';
+      case 'hardcore': return 'HARDCORE';
+      case 'godtier': return 'GOD TIER';
+      default: return difficulty.toUpperCase();
+    }
+  };
+
+  const getSelectedOptionLabel = (option: WinOption) => {
+    switch (option) {
+      case 'NEXT_DIFFICULTY': return 'NEXT DIFFICULTY';
+      case 'SAME_DIFFICULTY': return 'PLAY AGAIN';
+      case 'GO_HOME': return 'GO HOME';
+      default: return option;
+    }
+  };
+
+  return (
+    <div>
+      <div className="lcd-text lcd-text-large text-center mb-8">
+        CONGRATULATIONS!
+      </div>
+      
+      <div className="lcd-text text-center">
+        {getDifficultyLabel(currentDifficulty)} COMPLETE - SCORE: {finalScore}
+      </div>
+      
+      <div className="lcd-text text-center mt-4">
+        <span className="menu-item selected">
+          &gt;{getSelectedOptionLabel(selectedOption)}
+        </span>
+      </div>
+
+      <div className="lcd-text lcd-text-small text-center mt-8">
+        Use + - to navigate, = to select
+      </div>
+    </div>
+  );
+};
 
 export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
   // Format time remaining as MM:SS
@@ -32,7 +81,7 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
 
   // Determine what to show in feedback area
   const getFeedbackContent = () => {
-    if (gameState.gameStatus === 'won') {
+    if (gameState.gameStatus === 'won' && !gameState.showWinDisplay) {
       return 'CORRECT!';
     }
     
@@ -46,6 +95,17 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
     
     return '';
   };
+
+  // Show win display if game is won and showWinDisplay is true
+  if (gameState.gameStatus === 'won' && gameState.showWinDisplay) {
+    return (
+      <WinDisplay
+        finalScore={gameState.finalScore || 0}
+        currentDifficulty={gameState.mode}
+        selectedOption={gameState.selectedWinOption || 'NEXT_DIFFICULTY'}
+      />
+    );
+  }
 
   return (
     <div className="game-display relative w-full h-full min-h-24">

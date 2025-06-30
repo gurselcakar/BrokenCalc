@@ -1,7 +1,7 @@
 // Game types and data structures for BrokenCalc
 
 // Import difficulty mode from navigation types
-import type { DifficultyMode } from './navigation';
+import type { DifficultyMode, WinOption } from './navigation';
 
 
 
@@ -22,6 +22,8 @@ export interface GameState {
   userInput: string; // Current equation being built
   lastResult?: number; // Last calculated result
   showResult?: boolean; // Whether to show calculated result
+  showWinDisplay?: boolean; // Whether to show win display in LCD
+  selectedWinOption?: WinOption; // Currently selected win option
 }
 
 // Math problem structure
@@ -48,6 +50,13 @@ export interface CalculatorButton {
   gridPosition: { row: number; col: number; span?: number };
 }
 
+// Win display state for LCD
+export interface WinDisplayState {
+  finalScore: number;
+  selectedOption: WinOption;
+  currentDifficulty: DifficultyMode;
+}
+
 // Game display layout for LCD
 export interface GameDisplayState {
   timer: string; // "2:00" format
@@ -56,4 +65,5 @@ export interface GameDisplayState {
   feedback: string; // "INCORRECT" or empty
   showResult: boolean; // Show calculated result
   result?: number; // Calculated result to display
+  winDisplay?: WinDisplayState; // Win display state
 }

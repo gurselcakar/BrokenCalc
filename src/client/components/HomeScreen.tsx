@@ -6,10 +6,10 @@ import { HowToPlay } from './HowToPlay';
 import { Leaderboard } from './Leaderboard';
 import { GameDisplay } from './GameDisplay';
 import { Calculator } from './Calculator';
-import { useMenuNavigation } from '../hooks/useMenuNavigation';
 import { useGameLogic } from '../hooks/useGameLogic';
 import { useCalculator } from '../hooks/useCalculator';
-import type { MenuOption, WelcomeState } from '../../shared/types/navigation';
+import { useMenuNavigation } from '../hooks/useMenuNavigation';
+import type { MenuOption, WelcomeState, DifficultyMode, WinOption } from '../../shared/types/navigation';
 
 interface HomeScreenProps {
   username?: string | undefined;
@@ -38,11 +38,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
 
   // Game logic hook - only initialize when game screen is active
   const gameLogicResult = useGameLogic({
-    difficulty: state.selectedDifficulty || 'easy',
+    difficulty: state.selectedDifficulty ?? 'easy',
     onGameEnd: (finalScore, won) => {
       console.log('Game ended:', { finalScore, won });
-      // TODO: Show victory/defeat screen (Phase 2.4)
-      // For now, continue showing game interface with feedback
+      // Win display will be handled automatically by the game logic
+    },
+    onWinOptionSelect: (option: WinOption, currentDifficulty: DifficultyMode) => {
+      console.log('Win option selected:', option, 'Current difficulty:', currentDifficulty);
+      
+      switch (option) {
+        case 'NEXT_DIFFICULTY':
+          // Move to next difficulty level
+          // Navigate to difficulty selection or directly start next game
+          actions.setScreen('DIFFICULTY_SELECTION');
+          // TODO: Set the next difficulty and start game
+          break;
+        
+        case 'SAME_DIFFICULTY':
+          // Restart the same difficulty
+          setShowGameStart(true);
+          setGameStarted(false);
+          gameLogicResult.resetGame();
+          
+          // Show "GAME START" message and restart
+          setTimeout(() => {
+            setShowGameStart(false);
+            gameLogicResult.initializeGame();
+            setGameStarted(true);
+          }, 2000);
+          break;
+        
+        case 'GO_HOME':
+          // Return to main menu
+          actions.setScreen('MAIN_MENU');
+          gameLogicResult.resetGame();
+          setGameStarted(false);
+          break;
+      }
     },
   });
 
@@ -98,7 +130,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       
       <div className="lcd-text text-center">
         <span className="menu-item selected">
-          {'>'}{MENU_LABELS[state.selectedMenuOption]}
+          {'>'}{MENU_LABELS[state.selectedMenuOption as MenuOption]}
         </span>
       </div>
       
@@ -116,6 +148,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
 
   // Handle button press during game
   const handleGameButtonPress = (buttonId: string) => {
+    // Check if we're in win display mode first
+    if (gameLogicResult.gameState?.gameStatus === 'won' && gameLogicResult.gameState?.showWinDisplay) {
+      // Route to win display navigation
+      const handled = gameLogicResult.handleWinDisplayInput(buttonId);
+      if (handled) return;
+    }
+    
+    // Normal game button handling
     if (!gameLogicResult.gameState || gameLogicResult.gameState.gameStatus !== 'playing') return;
     calculatorResult.handleButtonPress(buttonId);
   };
@@ -133,7 +173,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
         GAME START
       </div>
       <div className="lcd-text">
-        {(state.selectedDifficulty || 'EASY').toUpperCase()} MODE
+        {(state.selectedDifficulty || 'easy').toUpperCase()} MODE
       </div>
       <div className="lcd-text lcd-text-small mt-8">
         Initializing...
@@ -228,14 +268,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
                         gameLogicResult.gameState && 
                         gameLogicResult.gameState.gameStatus === 'playing';
 
+    const isWinDisplay = state.currentScreen === 'GAME' && 
+                        gameLogicResult.gameState?.gameStatus === 'won' && 
+                        gameLogicResult.gameState?.showWinDisplay;
+
     const isNavigationMode = state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME';
 
     // Determine which handler to use
     let buttonHandler: (buttonId: string) => void;
     let disabled = false;
 
-    if (isGameActive) {
-      // Game mode: route to game logic
+    if (isGameActive || isWinDisplay) {
+      // Game mode or win display: route to game logic
       buttonHandler = handleGameButtonPress;
       disabled = false;
     } else if (isNavigationMode) {

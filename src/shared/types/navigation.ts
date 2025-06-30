@@ -9,12 +9,15 @@ export type ScreenState =
   | 'MAIN_MENU' 
     | 'DIFFICULTY_SELECTION' 
   | 'GAME'
+  | 'WIN_DISPLAY'
   | 'HOW_TO_PLAY' 
   | 'LEADERBOARD';
 
 export type InputMethod = 'TOUCH' | 'MOUSE' | 'KEYBOARD';
 
 export type NavigationAction = 'UP' | 'DOWN' | 'SELECT' | 'BACK';
+
+export type WinOption = 'NEXT_DIFFICULTY' | 'SAME_DIFFICULTY' | 'GO_HOME';
 
 export interface HomeScreenState {
   currentScreen: ScreenState;
