@@ -48,30 +48,30 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
   };
 
   return (
-    <div className="game-display">
+    <div className="game-display relative w-full h-full min-h-24">
       {/* Timer - Top Left */}
-      <div className="game-display-timer">
+      <div className="absolute top-0 left-0">
         <div className="lcd-text lcd-text-small">
           {formatTime(gameState.timeRemaining)}
         </div>
       </div>
 
       {/* Equation - Top Center */}
-      <div className="game-display-equation">
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
         <div className="lcd-text text-center">
           {gameState.problem.equation}
         </div>
       </div>
 
       {/* User Input/Result - Bottom Right */}
-      <div className="game-display-input">
+      <div className="absolute bottom-0 right-0">
         <div className="lcd-text text-right">
           {getInputDisplay()}
         </div>
       </div>
 
       {/* Feedback Area - Bottom Left */}
-      <div className="game-display-feedback">
+      <div className="absolute bottom-0 left-0">
         <div className="lcd-text lcd-text-small">
           {getFeedbackContent()}
         </div>

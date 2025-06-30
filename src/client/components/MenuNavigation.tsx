@@ -18,10 +18,10 @@ export const MenuNavigation: React.FC<MenuNavigationProps> = ({
   onBack,
 }) => {
   return (
-    <div className="nav-buttons">
+    <div className="nav-buttons absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-10">
       {/* Up Arrow */}
       <button
-        className="nav-button"
+        className="nav-button text-base px-3 py-2"
         onClick={onNavigateUp}
         disabled={state.isTransitioning}
         aria-label="Navigate up"
@@ -31,7 +31,7 @@ export const MenuNavigation: React.FC<MenuNavigationProps> = ({
       
       {/* OK Button */}
       <button
-        className="nav-button"
+        className="nav-button text-base px-3 py-2"
         onClick={onSelect}
         disabled={state.isTransitioning}
         aria-label="Select"
@@ -41,7 +41,7 @@ export const MenuNavigation: React.FC<MenuNavigationProps> = ({
       
       {/* Down Arrow */}
       <button
-        className="nav-button"
+        className="nav-button text-base px-3 py-2"
         onClick={onNavigateDown}
         disabled={state.isTransitioning}
         aria-label="Navigate down"
@@ -51,7 +51,7 @@ export const MenuNavigation: React.FC<MenuNavigationProps> = ({
       
       {/* Back Button */}
       <button
-        className={`nav-button ${!state.showBackButton ? 'hidden' : ''}`}
+        className={`nav-button text-base px-3 py-2 ${!state.showBackButton ? 'opacity-0 pointer-events-none' : ''}`}
         onClick={onBack}
         disabled={state.isTransitioning || !state.showBackButton}
         aria-label="Go back"
