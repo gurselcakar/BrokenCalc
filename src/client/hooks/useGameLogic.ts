@@ -19,30 +19,40 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
 
   // Initialize game
   const initializeGame = useCallback(() => {
-    const problem = generateProblem(difficulty);
-    const buttonMapping = generateButtonMapping(difficulty);
-
-    const newGameState: GameState = {
-      mode: difficulty,
-      problem,
-      buttonMapping,
-      calculatorDisplay: '',
-      timeRemaining: 120, // 2 minutes
-      gameStatus: 'playing',
-      userInput: '',
-      showWinDisplay: false,
-      selectedWinOption: 'NEXT_DIFFICULTY',
-    };
-
-    setGameState(newGameState);
-    setIsInitialized(true);
+    console.log('initializeGame called with difficulty:', difficulty);
     
-    console.log('Game initialized:', {
-      difficulty,
-      problem: problem.equation,
-      solutions: problem.possibleSolutions,
-      buttonMapping,
-    });
+    try {
+      const problem = generateProblem(difficulty);
+      console.log('Problem generated:', problem);
+      
+      const buttonMapping = generateButtonMapping(difficulty);
+      console.log('Button mapping generated:', buttonMapping);
+
+      const newGameState: GameState = {
+        mode: difficulty,
+        problem,
+        buttonMapping,
+        calculatorDisplay: '',
+        timeRemaining: 120, // 2 minutes
+        gameStatus: 'playing',
+        userInput: '',
+        showWinDisplay: false,
+        selectedWinOption: 'NEXT_DIFFICULTY',
+      };
+
+      console.log('Setting new game state:', newGameState);
+      setGameState(newGameState);
+      setIsInitialized(true);
+      
+      console.log('Game initialized successfully:', {
+        difficulty,
+        problem: problem.equation,
+        solutions: problem.possibleSolutions,
+        buttonMapping,
+      });
+    } catch (error) {
+      console.error('Error initializing game:', error);
+    }
   }, [difficulty]);
 
   // Start countdown timer
