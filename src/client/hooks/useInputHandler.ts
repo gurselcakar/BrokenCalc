@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 import { useAppNavigation, useAppGame } from './useAppState';
 import { useGameInputHandlers } from './useGameInputHandlers';
-import type { MenuOption, DifficultyMode } from '../../shared/types/navigation';
+import { MENU_OPTIONS, DIFFICULTY_OPTIONS } from '../constants/navigation';
+import { createTransitionHandler } from '../utils/transitions';
 
 type InputHandler = (buttonId: string) => boolean;
-
-const MENU_OPTIONS: MenuOption[] = ['PLAY', 'HOW TO PLAY', 'LEADERBOARD'];
-const DIFFICULTY_OPTIONS: DifficultyMode[] = ['easy', 'medium', 'hard', 'hardcore', 'godtier'];
 
 export const useInputHandler = () => {
   const { navigation, setScreen, setMenuOption, setDifficulty, setTransition, setBackButton } = useAppNavigation();
@@ -15,8 +13,6 @@ export const useInputHandler = () => {
 
   // Navigation input handler for menu screens using AppContext
   const handleNavigationInput: InputHandler = useCallback((buttonId: string) => {
-    console.log('Navigation button press:', buttonId, 'on screen:', navigation.currentScreen);
-    
     if (navigation.isTransitioning) return true;
 
     // Helper function to navigate menu options
@@ -32,8 +28,7 @@ export const useInputHandler = () => {
         }
         
         setMenuOption(MENU_OPTIONS[newIndex] || 'PLAY');
-        setTransition(true);
-        setTimeout(() => setTransition(false), 300);
+        createTransitionHandler(setTransition);
       } else if (navigation.currentScreen === 'DIFFICULTY_SELECTION') {
         const currentIndex = navigation.selectedDifficulty 
           ? DIFFICULTY_OPTIONS.indexOf(navigation.selectedDifficulty)
@@ -47,16 +42,13 @@ export const useInputHandler = () => {
         }
         
         setDifficulty(DIFFICULTY_OPTIONS[newIndex] || 'easy');
-        setTransition(true);
-        setTimeout(() => setTransition(false), 300);
+        createTransitionHandler(setTransition);
       }
     };
 
     // Helper function to handle selection
     const handleSelect = () => {
       if (navigation.currentScreen === 'MAIN_MENU') {
-        setTransition(true);
-        
         if (navigation.selectedMenuOption === 'PLAY') {
           setScreen('DIFFICULTY_SELECTION');
           setDifficulty('easy');
@@ -69,86 +61,42 @@ export const useInputHandler = () => {
           setBackButton(true);
         }
         
-        setTimeout(() => setTransition(false), 300);
+        createTransitionHandler(setTransition);
       } else if (navigation.currentScreen === 'DIFFICULTY_SELECTION' && navigation.selectedDifficulty) {
-        setTransition(true);
         setScreen('GAME');
         setBackButton(true);
-        setTimeout(() => setTransition(false), 300);
+        createTransitionHandler(setTransition);
       }
     };
 
     // Helper function to handle back navigation
     const handleBack = () => {
       if (navigation.showBackButton) {
-        setTransition(true);
         setScreen('MAIN_MENU');
         setBackButton(false);
-        setTimeout(() => setTransition(false), 300);
+        createTransitionHandler(setTransition);
       }
     };
 
     // Map calculator buttons to navigation actions
     switch (buttonId) {
       case 'add': // + button for UP navigation
-      case '8': // Alternative: 8 button for UP
         navigateMenu('UP');
         break;
       
       case 'subtract': // - button for DOWN navigation
-      case '2': // Alternative: 2 button for DOWN
         navigateMenu('DOWN');
         break;
       
       case 'equals': // = button for SELECT
-      case '5': // Alternative: 5 button for SELECT (center)
         handleSelect();
         break;
       
       case 'delete': // Delete button for BACK
-      case '4': // Alternative: 4 button for BACK (left)
         handleBack();
         break;
 
-      // Number shortcuts for direct menu selection
-      case '1':
-        if (navigation.currentScreen === 'MAIN_MENU') {
-          setMenuOption('PLAY');
-          setTimeout(() => handleSelect(), 100);
-        }
-        break;
-      
-      case '3':
-        if (navigation.currentScreen === 'MAIN_MENU') {
-          setMenuOption('HOW TO PLAY');
-          setTimeout(() => handleSelect(), 100);
-        }
-        break;
-      
-      case '6':
-        if (navigation.currentScreen === 'MAIN_MENU') {
-          setMenuOption('LEADERBOARD');
-          setTimeout(() => handleSelect(), 100);
-        }
-        break;
-
-      // Difficulty shortcuts
-      case '7':
-        if (navigation.currentScreen === 'DIFFICULTY_SELECTION') {
-          setDifficulty('easy');
-          setTimeout(() => handleSelect(), 100);
-        }
-        break;
-      
-      case '9':
-        if (navigation.currentScreen === 'DIFFICULTY_SELECTION') {
-          setDifficulty('medium');
-          setTimeout(() => handleSelect(), 100);
-        }
-        break;
-
       default:
-        console.log('Unmapped calculator button for navigation:', buttonId);
         break;
     }
     
@@ -181,8 +129,9 @@ export const useInputHandler = () => {
       if (gameHandlers) {
         const isGameActive = gameHandlers.isGameActive;
         const isWinDisplay = gameHandlers.isWinDisplay;
+        const isTimeUpDisplay = gameHandlers.isTimeUpDisplay;
         
-        if (isGameActive || isWinDisplay) {
+        if (isGameActive || isWinDisplay || isTimeUpDisplay) {
           return { handler: handleGameInput, disabled: false };
         }
       }
@@ -208,7 +157,6 @@ export const useInputHandler = () => {
     const { handler, disabled } = getInputHandler();
     
     if (disabled) {
-      console.log('Input disabled for current state');
       return;
     }
     

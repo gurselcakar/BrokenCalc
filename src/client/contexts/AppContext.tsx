@@ -2,6 +2,7 @@ import React, { createContext, useReducer, useMemo } from 'react';
 import type { AppState, AppAction, AppActions, AppContextType } from '../../shared/types/app';
 import type { DifficultyMode, MenuOption, ScreenState } from '../../shared/types/navigation';
 import type { GameState } from '../../shared/types/game';
+import { WELCOME_DELAY } from '../constants/navigation';
 
 // Initial state
 const initialState: AppState = {
@@ -18,7 +19,7 @@ const initialState: AppState = {
   welcome: {
     username: null,
     isVisible: true,
-    transitionDelay: 2500,
+    transitionDelay: WELCOME_DELAY,
   },
   game: {
     showGameStart: false,

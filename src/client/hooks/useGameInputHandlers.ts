@@ -4,6 +4,7 @@ export interface GameInputHandlers {
   handleGameButtonPress: (buttonId: string) => boolean;
   isGameActive: boolean;
   isWinDisplay: boolean;
+  isTimeUpDisplay: boolean;
 }
 
 // Module-level store for game input handlers

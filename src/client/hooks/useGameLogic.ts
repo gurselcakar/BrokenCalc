@@ -1,32 +1,30 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { GameState } from '../../shared/types/game';
-import type { DifficultyMode, WinOption } from '../../shared/types/navigation';
+import type { DifficultyMode, WinOption, TimeUpOption } from '../../shared/types/navigation';
 import { generateButtonMapping } from '../utils/buttonScrambler';
 import { generateProblem, validateEquation } from '../utils/problemGenerator';
+import { WIN_FEEDBACK_DELAY, TIMEUP_FEEDBACK_DELAY } from '../constants/navigation';
 
 interface UseGameLogicProps {
   difficulty: DifficultyMode;
   onGameEnd?: (finalScore: number, won: boolean) => void;
   onWinOptionSelect?: (option: WinOption, currentDifficulty: DifficultyMode) => void;
+  onTimeUpOptionSelect?: (option: TimeUpOption, currentDifficulty: DifficultyMode) => void;
 }
 
 const WIN_OPTIONS: WinOption[] = ['NEXT_DIFFICULTY', 'SAME_DIFFICULTY', 'GO_HOME'];
+const TIMEUP_OPTIONS: TimeUpOption[] = ['TRY_AGAIN', 'EASIER_DIFFICULTY', 'GO_HOME'];
 
-export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGameLogicProps) => {
+export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect, onTimeUpOptionSelect }: UseGameLogicProps) => {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Initialize game
   const initializeGame = useCallback(() => {
-    console.log('initializeGame called with difficulty:', difficulty);
-    
     try {
       const problem = generateProblem(difficulty);
-      console.log('Problem generated:', problem);
-      
       const buttonMapping = generateButtonMapping(difficulty);
-      console.log('Button mapping generated:', buttonMapping);
 
       const newGameState: GameState = {
         mode: difficulty,
@@ -38,18 +36,12 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
         userInput: '',
         showWinDisplay: false,
         selectedWinOption: 'NEXT_DIFFICULTY',
+        showTimeUpDisplay: false,
+        selectedTimeUpOption: 'TRY_AGAIN',
       };
 
-      console.log('Setting new game state:', newGameState);
       setGameState(newGameState);
       setIsInitialized(true);
-      
-      console.log('Game initialized successfully:', {
-        difficulty,
-        problem: problem.equation,
-        solutions: problem.possibleSolutions,
-        buttonMapping,
-      });
     } catch (error) {
       console.error('Error initializing game:', error);
     }
@@ -66,7 +58,22 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
         const newTimeRemaining = prev.timeRemaining - 1;
 
         if (newTimeRemaining <= 0) {
-          // Time's up!
+          // Time's up! Stop timer and show time-up display after delay
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+          }
+          
+          // Show "TIME UP!" for a moment, then transition to time-up display
+          setTimeout(() => {
+            setGameState(prev => {
+              if (!prev) return prev;
+              return {
+                ...prev,
+                showTimeUpDisplay: true,
+              };
+            });
+          }, TIMEUP_FEEDBACK_DELAY);
+          
           onGameEnd?.(0, false);
           return {
             ...prev,
@@ -122,6 +129,39 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
     onWinOptionSelect?.(gameState.selectedWinOption, gameState.mode);
   }, [gameState, onWinOptionSelect]);
 
+  // Navigate between time-up options
+  const navigateTimeUpOptions = useCallback((direction: 'UP' | 'DOWN') => {
+    if (!gameState || gameState.gameStatus !== 'timeup' || !gameState.showTimeUpDisplay) return;
+
+    setGameState(prev => {
+      if (!prev) return prev;
+
+      const currentOption = prev.selectedTimeUpOption || 'TRY_AGAIN';
+      const currentIndex = TIMEUP_OPTIONS.indexOf(currentOption);
+      let newIndex;
+
+      if (direction === 'UP') {
+        newIndex = currentIndex === 0 ? TIMEUP_OPTIONS.length - 1 : currentIndex - 1;
+      } else {
+        newIndex = currentIndex === TIMEUP_OPTIONS.length - 1 ? 0 : currentIndex + 1;
+      }
+
+      const newSelectedOption = TIMEUP_OPTIONS[newIndex];
+
+      return {
+        ...prev,
+        selectedTimeUpOption: newSelectedOption,
+      } as GameState;
+    });
+  }, [gameState]);
+
+  // Select time-up option
+  const selectTimeUpOption = useCallback(() => {
+    if (!gameState || gameState.gameStatus !== 'timeup' || !gameState.showTimeUpDisplay || !gameState.selectedTimeUpOption) return;
+
+    onTimeUpOptionSelect?.(gameState.selectedTimeUpOption, gameState.mode);
+  }, [gameState, onTimeUpOptionSelect]);
+
   // Handle calculator button input during win display
   const handleWinDisplayInput = useCallback((buttonId: string) => {
     if (!gameState || gameState.gameStatus !== 'won' || !gameState.showWinDisplay) return false;
@@ -141,13 +181,28 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
     }
   }, [gameState, navigateWinOptions, selectWinOption]);
 
+  // Handle calculator button input during time-up display
+  const handleTimeUpDisplayInput = useCallback((buttonId: string) => {
+    if (!gameState || gameState.gameStatus !== 'timeup' || !gameState.showTimeUpDisplay) return false;
+
+    switch (buttonId) {
+      case 'add': // + for UP
+        navigateTimeUpOptions('UP');
+        return true;
+      case 'subtract': // - for DOWN
+        navigateTimeUpOptions('DOWN');
+        return true;
+      case 'equals': // = for SELECT
+        selectTimeUpOption();
+        return true;
+      default:
+        return false;
+    }
+  }, [gameState, navigateTimeUpOptions, selectTimeUpOption]);
+
   // Handle equation completion from calculator
   const handleEquationComplete = useCallback((equation: string, result: number) => {
     if (!gameState || gameState.gameStatus !== 'playing') return;
-
-    console.log('Equation completed:', equation, '=', result);
-    console.log('Target value:', gameState.problem.targetValue);
-    console.log('Possible solutions:', gameState.problem.possibleSolutions);
 
     // Update game state with result
     setGameState(prev => {
@@ -189,14 +244,11 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
             showWinDisplay: true,
           };
         });
-      }, 1500); // Show CORRECT! for 1.5 seconds
+      }, WIN_FEEDBACK_DELAY);
 
       onGameEnd?.(finalScore, true);
-      
-      console.log('Victory! Final score:', finalScore);
     } else {
       // Wrong answer - show feedback
-      console.log('Incorrect answer');
       
       // The feedback will be shown in the GameDisplay component
       // User can continue playing
@@ -227,6 +279,7 @@ export const useGameLogic = ({ difficulty, onGameEnd, onWinOptionSelect }: UseGa
     initializeGame,
     handleEquationComplete,
     handleWinDisplayInput,
+    handleTimeUpDisplayInput,
     resetGame,
   };
 };

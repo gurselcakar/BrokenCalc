@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { ScrollableContent } from './ScrollableContent';
+import { useScrollBounds } from '../utils/scrollLogic';
 
 interface HowToPlayProps {
   scrollPosition?: number;
@@ -14,50 +15,8 @@ export const HowToPlay: React.FC<HowToPlayProps> = ({
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Calculate scroll bounds based on content height
-  useEffect(() => {
-    const calculateScrollBounds = () => {
-      if (contentRef.current && onSetScrollBounds) {
-        // Get the actual container height from the parent's parent (scrollable-content -> scrollable-container)
-        const scrollableContent = contentRef.current.parentElement;
-        const scrollableContainer = scrollableContent?.parentElement;
-        
-        if (scrollableContainer && scrollableContent) {
-          const containerHeight = scrollableContainer.clientHeight;
-          const contentHeight = contentRef.current.scrollHeight;
-          const lineHeight = 28; // More accurate line height for LCD text
-          
-          // Calculate how many lines we need to scroll to see all content
-          const totalLines = Math.ceil(contentHeight / lineHeight);
-          const visibleLines = Math.floor(containerHeight / lineHeight);
-          const maxScroll = Math.max(0, totalLines - visibleLines);
-          
-          console.log('HowToPlay scroll calculation:', {
-            containerHeight,
-            contentHeight,
-            lineHeight,
-            totalLines,
-            visibleLines,
-            maxScroll,
-            overflow: contentHeight > containerHeight
-          });
-          
-          onSetScrollBounds(maxScroll);
-        }
-      }
-    };
-
-    // Calculate after component mounts and on resize
-    const timer1 = setTimeout(calculateScrollBounds, 100);
-    const timer2 = setTimeout(calculateScrollBounds, 500); // Double check after longer delay
-    window.addEventListener('resize', calculateScrollBounds);
-    
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      window.removeEventListener('resize', calculateScrollBounds);
-    };
-  }, [onSetScrollBounds]);
+  // Use centralized scroll bounds calculation
+  useScrollBounds(contentRef, onSetScrollBounds);
 
   return (
     <ScrollableContent

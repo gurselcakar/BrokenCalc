@@ -9,7 +9,7 @@ export const DifficultySelectionScreen: React.FC = () => {
     <div>
       <DifficultySelection selectedDifficulty={navigation.selectedDifficulty} />
       <div className="lcd-text lcd-text-small text-center mt-6">
-        Use + - = ⌫ or press 7, 9 for shortcuts
+        Use + - = ⌫
       </div>
     </div>
   );

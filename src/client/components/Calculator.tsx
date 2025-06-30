@@ -54,9 +54,10 @@ export const Calculator: React.FC<CalculatorProps> = ({
       ${button.type === 'operator' ? 'calc-button-operator' : ''}
       ${button.type === 'action' ? 'calc-button-action' : ''}
       ${disabled ? 'calc-button-disabled' : ''}
-      rounded-lg font-semibold flex items-center justify-center
-      text-sm md:text-base lg:text-lg px-2 py-2 h-full
+      rounded-md sm:rounded-lg font-semibold flex items-center justify-center
+      text-xs sm:text-sm md:text-base lg:text-lg px-1 sm:px-2 py-1 sm:py-2
       transition-all duration-150 active:scale-95
+      min-h-8 sm:min-h-10 md:min-h-12 lg:min-h-14
     `.replace(/\s+/g, ' ').trim();
 
     const gridStyle = {
@@ -93,7 +94,7 @@ export const Calculator: React.FC<CalculatorProps> = ({
   );
 
   return (
-    <div className={`calculator-grid ${className} grid grid-cols-4 grid-rows-5 gap-2 w-full h-full`}>
+    <div className={`calculator-grid ${className} grid grid-cols-4 grid-rows-5 gap-1 sm:gap-2 md:gap-3 w-full h-full max-h-full`}>
       {/* Render all buttons */}
       {CALCULATOR_BUTTONS.map(renderButton)}
       

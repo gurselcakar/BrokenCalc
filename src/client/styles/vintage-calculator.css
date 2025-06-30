@@ -364,8 +364,12 @@
 .calculator-buttons-area {
   background: var(--calc-body);
   border-radius: 8px;
-  padding: 16px;
-  margin-top: 8px;
+}
+
+/* Calculator grid - let Tailwind handle responsiveness */
+.calculator-grid {
+  /* Ensure proper grid behavior */
+  display: grid;
 }
 
 /* Screen transitions */

@@ -50,26 +50,20 @@ export const useCalculator = ({
         newShowResult = false;
       } else if (actualValue === '=') {
         // Calculate result
-        console.log('🧮 Equals pressed! UserInput:', newUserInput);
         if (newUserInput) {
           try {
-            console.log('🔢 About to evaluate expression:', newUserInput);
             const result = evaluateExpression(newUserInput);
-            console.log('✅ Calculation result:', result);
             newLastResult = result;
             newShowResult = true;
             newDisplay = result.toString();
             
             // Notify parent component
             onEquationComplete?.(newUserInput, result);
-            console.log('📤 Notified parent with result:', result);
           } catch (error) {
             console.error('❌ Calculation error:', error);
             newDisplay = 'ERROR';
             newShowResult = true;
           }
-        } else {
-          console.log('⚠️ No user input to calculate');
         }
       } else {
         // Add number or operator
@@ -150,8 +144,6 @@ const evaluateBasicMath = (expression: string): number => {
   const left = parseFloat(leftStr);
   const right = parseFloat(rightStr);
   
-  console.log('🔢 Parsed operands:', { left, operator, right });
-  
   switch (operator) {
     case '+':
       return left + right;
@@ -171,15 +163,11 @@ const evaluateBasicMath = (expression: string): number => {
  * Safely evaluate a mathematical expression
  */
 const evaluateExpression = (expression: string): number => {
-  console.log('🔍 Starting evaluation of:', expression);
-  
   // Remove spaces
   const cleaned = expression.replace(/\s/g, '');
-  console.log('🧹 After cleaning:', cleaned);
   
   // Validate expression contains only allowed characters
   const isValid = /^[\d+\-×÷.()]+$/.test(cleaned);
-  console.log('✅ Validation check:', isValid, 'for pattern:', /^[\d+\-×÷.()]+$/);
   if (!isValid) {
     console.error('❌ Invalid characters in expression:', cleaned);
     throw new Error('Invalid characters in expression');
@@ -189,13 +177,10 @@ const evaluateExpression = (expression: string): number => {
   const jsExpression = cleaned
     .replace(/×/g, '*')
     .replace(/÷/g, '/');
-  console.log('🔀 JS expression:', jsExpression);
   
   // Use a simple math evaluator instead of Function constructor
   try {
-    console.log('🚀 About to evaluate:', jsExpression);
     const result = evaluateBasicMath(jsExpression);
-    console.log('📊 Raw result:', result, 'type:', typeof result);
     
     if (typeof result !== 'number' || !isFinite(result)) {
       console.error('❌ Invalid result type or not finite:', result);
@@ -203,7 +188,6 @@ const evaluateExpression = (expression: string): number => {
     }
     
     const rounded = Math.round(result * 1000) / 1000; // Round to 3 decimal places
-    console.log('🎯 Final rounded result:', rounded);
     return rounded;
   } catch (error) {
     console.error('❌ Evaluation failed:', error);

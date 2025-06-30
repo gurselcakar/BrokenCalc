@@ -12,11 +12,8 @@ export type ScreenState =
   | 'HOW_TO_PLAY' 
   | 'LEADERBOARD';
 
-export type InputMethod = 'TOUCH' | 'MOUSE' | 'KEYBOARD';
-
-export type NavigationAction = 'UP' | 'DOWN' | 'SELECT' | 'BACK';
-
 export type WinOption = 'NEXT_DIFFICULTY' | 'SAME_DIFFICULTY' | 'GO_HOME';
+export type TimeUpOption = 'TRY_AGAIN' | 'EASIER_DIFFICULTY' | 'GO_HOME';
 
 export interface HomeScreenState {
   currentScreen: ScreenState;
@@ -35,9 +32,3 @@ export interface WelcomeState {
   transitionDelay: number;
 }
 
-export interface NavigationState {
-  currentScreen: ScreenState;
-  selectedOption: MenuOption | DifficultyMode;
-  screenHistory: ScreenState[];
-  inputMethod: InputMethod;
-}

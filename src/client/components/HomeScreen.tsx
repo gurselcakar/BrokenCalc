@@ -5,6 +5,8 @@ import { ScreenRouter } from './ScreenRouter';
 import { AppProvider } from '../contexts/AppContext';
 import { useAppNavigation, useAppWelcome } from '../hooks/useAppState';
 import { useInputHandler } from '../hooks/useInputHandler';
+import { WELCOME_DELAY } from '../constants/navigation';
+import { createDelayedAction } from '../utils/transitions';
 
 interface HomeScreenProps {
   username?: string | undefined;
@@ -24,16 +26,14 @@ const HomeScreenContent: React.FC = () => {
     if (!welcomeInitialized.current) {
       welcomeInitialized.current = true;
       
-      // Start with welcome screen and transition state
+      // Start with welcome screen and transition to main menu after delay
       setScreen('WELCOME');
-      setTransition(true);
       
-      // After 2.5 seconds, transition to main menu
-      setTimeout(() => {
+      // After welcome delay, transition to main menu
+      createDelayedAction(() => {
         setScreen('MAIN_MENU');
         setWelcomeVisible(false);
-        setTransition(false);
-      }, 2500);
+      }, setTransition, WELCOME_DELAY);
     }
   }, [setScreen, setTransition, setWelcomeVisible]);
 

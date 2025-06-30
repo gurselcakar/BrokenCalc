@@ -1,6 +1,6 @@
 import React from 'react';
 import type { GameState } from '../../shared/types/game';
-import type { WinOption } from '../../shared/types/navigation';
+import type { WinOption, TimeUpOption } from '../../shared/types/navigation';
 
 interface GameDisplayProps {
   gameState: GameState;
@@ -54,6 +54,53 @@ const WinDisplay: React.FC<{
   );
 };
 
+const TimeUpDisplay: React.FC<{
+  currentDifficulty: string;
+  selectedOption: TimeUpOption;
+}> = ({ currentDifficulty, selectedOption }) => {
+  const getDifficultyLabel = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy': return 'EASY';
+      case 'medium': return 'MEDIUM';
+      case 'hard': return 'HARD';
+      case 'hardcore': return 'HARDCORE';
+      case 'godtier': return 'GOD TIER';
+      default: return difficulty.toUpperCase();
+    }
+  };
+
+  const getSelectedOptionLabel = (option: TimeUpOption) => {
+    switch (option) {
+      case 'TRY_AGAIN': return 'TRY AGAIN';
+      case 'EASIER_DIFFICULTY': return 'EASIER DIFFICULTY';
+      case 'GO_HOME': return 'GO HOME';
+      default: return option;
+    }
+  };
+
+  return (
+    <div>
+      <div className="lcd-text lcd-text-large text-center mb-8">
+        TIME UP!
+      </div>
+      
+      <div className="lcd-text text-center">
+        {getDifficultyLabel(currentDifficulty)} - BETTER LUCK NEXT TIME
+      </div>
+      
+      <div className="lcd-text text-center mt-4">
+        <span className="menu-item selected">
+          &gt;{getSelectedOptionLabel(selectedOption)}
+        </span>
+      </div>
+
+      <div className="lcd-text lcd-text-small text-center mt-8">
+        Use + - to navigate, = to select
+      </div>
+    </div>
+  );
+};
+
 export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
   // Format time remaining as MM:SS
   const formatTime = (seconds: number): string => {
@@ -85,6 +132,10 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
       return 'CORRECT!';
     }
     
+    if (gameState.gameStatus === 'timeup' && !gameState.showTimeUpDisplay) {
+      return 'TIME UP!';
+    }
+    
     // Show "INCORRECT" if we have a result that doesn't match the target and we're showing the result
     if (gameState.showResult && gameState.lastResult !== undefined) {
       const isCorrect = Math.abs(gameState.lastResult - gameState.problem.targetValue) < 0.001;
@@ -103,6 +154,16 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({ gameState }) => {
         finalScore={gameState.finalScore || 0}
         currentDifficulty={gameState.mode}
         selectedOption={gameState.selectedWinOption || 'NEXT_DIFFICULTY'}
+      />
+    );
+  }
+
+  // Show time-up display if game is timeup and showTimeUpDisplay is true
+  if (gameState.gameStatus === 'timeup' && gameState.showTimeUpDisplay) {
+    return (
+      <TimeUpDisplay
+        currentDifficulty={gameState.mode}
+        selectedOption={gameState.selectedTimeUpOption || 'TRY_AGAIN'}
       />
     );
   }

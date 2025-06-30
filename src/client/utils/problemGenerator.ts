@@ -282,7 +282,7 @@ export const validateEquation = (equation: string, targetValue: number): boolean
     // Parse and evaluate the equation
     const result = evaluateEquation(equation);
     const isValid = Math.abs(result - targetValue) < 0.001; // Handle floating point precision
-    console.log('🔍 Validation check:', { equation, result, targetValue, isValid });
+
     return isValid;
   } catch (error) {
     console.error('❌ Validation error:', error);

@@ -1,7 +1,7 @@
 // Game types and data structures for BrokenCalc
 
 // Import difficulty mode from navigation types
-import type { DifficultyMode, WinOption } from './navigation';
+import type { DifficultyMode, WinOption, TimeUpOption } from './navigation';
 
 
 
@@ -24,6 +24,8 @@ export interface GameState {
   showResult?: boolean; // Whether to show calculated result
   showWinDisplay?: boolean; // Whether to show win display in LCD
   selectedWinOption?: WinOption; // Currently selected win option
+  showTimeUpDisplay?: boolean; // Whether to show time-up display in LCD
+  selectedTimeUpOption?: TimeUpOption; // Currently selected time-up option
 }
 
 // Math problem structure

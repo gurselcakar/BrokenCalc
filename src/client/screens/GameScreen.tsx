@@ -4,10 +4,12 @@ import { useGameLogic } from '../hooks/useGameLogic';
 import { useCalculator } from '../hooks/useCalculator';
 import { useAppNavigation, useAppGame } from '../hooks/useAppState';
 import { useGameInputHandlers } from '../hooks/useGameInputHandlers';
-import type { WinOption, DifficultyMode } from '../../shared/types/navigation';
+import type { WinOption, DifficultyMode, TimeUpOption } from '../../shared/types/navigation';
+import { DIFFICULTY_OPTIONS, GAME_START_DELAY } from '../constants/navigation';
+import { createDelayedAction } from '../utils/transitions';
 
 export const GameScreen: React.FC = () => {
-  const { navigation, setScreen } = useAppNavigation();
+  const { navigation, setScreen, setDifficulty, setTransition } = useAppNavigation();
   const { game, setGameStartVisible, setGameStarted, setGameInitialized } = useAppGame();
   const { registerHandlers, unregisterHandlers } = useGameInputHandlers();
   const initializationStarted = useRef(false);
@@ -15,39 +17,139 @@ export const GameScreen: React.FC = () => {
   // Game logic hook
   const gameLogicResult = useGameLogic({
     difficulty: navigation.selectedDifficulty ?? 'easy',
-    onGameEnd: (finalScore, won) => {
-      console.log('Game ended:', { finalScore, won });
+    onGameEnd: (_finalScore, _won) => {
       // Win display will be handled automatically by the game logic
     },
     onWinOptionSelect: (option: WinOption, currentDifficulty: DifficultyMode) => {
-      console.log('Win option selected:', option, 'Current difficulty:', currentDifficulty);
       
       switch (option) {
-        case 'NEXT_DIFFICULTY':
+        case 'NEXT_DIFFICULTY': {
           // Move to next difficulty level
-          setScreen('DIFFICULTY_SELECTION');
-          // TODO: Set the next difficulty and start game
+          const currentIndex = DIFFICULTY_OPTIONS.indexOf(currentDifficulty);
+          const nextIndex = currentIndex + 1;
+          
+          if (nextIndex < DIFFICULTY_OPTIONS.length) {
+            // Advance to next difficulty and start game immediately
+            const nextDifficulty = DIFFICULTY_OPTIONS[nextIndex];
+            if (nextDifficulty) {
+              setDifficulty(nextDifficulty);
+            
+            // Reset and restart game with new difficulty
+            gameLogicResult.resetGame();
+            clearCalculatorRef.current(); // Clear calculator state
+            initializationStarted.current = false;
+            setGameStartVisible(true);
+            setGameStarted(false);
+            
+              // Show "GAME START" message and restart with new difficulty
+              createDelayedAction(() => {
+                setGameStartVisible(false);
+                gameLogicResult.initializeGame();
+                setGameStarted(true);
+              }, setTransition, GAME_START_DELAY);
+            }
+          } else {
+            // Player has completed all difficulties - go to main menu
+            setScreen('MAIN_MENU');
+            gameLogicResult.resetGame();
+            clearCalculatorRef.current(); // Clear calculator state
+            setGameStarted(false);
+            initializationStarted.current = false;
+          }
           break;
+        }
         
         case 'SAME_DIFFICULTY':
           // Restart the same difficulty
           setGameStartVisible(true);
           setGameStarted(false);
           gameLogicResult.resetGame();
+          clearCalculatorRef.current(); // Clear calculator state
           initializationStarted.current = false;
           
           // Show "GAME START" message and restart
-          setTimeout(() => {
+          createDelayedAction(() => {
             setGameStartVisible(false);
             gameLogicResult.initializeGame();
             setGameStarted(true);
-          }, 2000);
+          }, setTransition, GAME_START_DELAY);
           break;
         
         case 'GO_HOME':
           // Return to main menu
           setScreen('MAIN_MENU');
           gameLogicResult.resetGame();
+          clearCalculatorRef.current(); // Clear calculator state
+          setGameStarted(false);
+          initializationStarted.current = false;
+          break;
+      }
+    },
+    onTimeUpOptionSelect: (option: TimeUpOption, currentDifficulty: DifficultyMode) => {
+      switch (option) {
+        case 'TRY_AGAIN':
+          // Restart the same difficulty
+          setGameStartVisible(true);
+          setGameStarted(false);
+          gameLogicResult.resetGame();
+          clearCalculatorRef.current(); // Clear calculator state
+          initializationStarted.current = false;
+          
+          // Show "GAME START" message and restart
+          createDelayedAction(() => {
+            setGameStartVisible(false);
+            gameLogicResult.initializeGame();
+            setGameStarted(true);
+          }, setTransition, GAME_START_DELAY);
+          break;
+        
+        case 'EASIER_DIFFICULTY': {
+          // Move to easier difficulty level
+          const currentIndex = DIFFICULTY_OPTIONS.indexOf(currentDifficulty);
+          const easierIndex = currentIndex - 1;
+          
+          if (easierIndex >= 0) {
+            // Move to easier difficulty and start game immediately
+            const easierDifficulty = DIFFICULTY_OPTIONS[easierIndex];
+            if (easierDifficulty) {
+              setDifficulty(easierDifficulty);
+            
+              // Reset and restart game with easier difficulty
+              gameLogicResult.resetGame();
+              clearCalculatorRef.current(); // Clear calculator state
+              initializationStarted.current = false;
+              setGameStartVisible(true);
+              setGameStarted(false);
+              
+              // Show "GAME START" message and restart with easier difficulty
+              createDelayedAction(() => {
+                setGameStartVisible(false);
+                gameLogicResult.initializeGame();
+                setGameStarted(true);
+              }, setTransition, GAME_START_DELAY);
+            }
+          } else {
+            // Already on easiest difficulty - just restart
+            setGameStartVisible(true);
+            setGameStarted(false);
+            gameLogicResult.resetGame();
+            clearCalculatorRef.current(); // Clear calculator state
+            initializationStarted.current = false;
+            
+            createDelayedAction(() => {
+              setGameStartVisible(false);
+              gameLogicResult.initializeGame();
+              setGameStarted(true);
+            }, setTransition, GAME_START_DELAY);
+          }
+          break;
+        }
+        
+        case 'GO_HOME':
+          // Return to main menu
+          setScreen('MAIN_MENU');
+          gameLogicResult.resetGame();
+          clearCalculatorRef.current(); // Clear calculator state
           setGameStarted(false);
           initializationStarted.current = false;
           break;
@@ -62,32 +164,34 @@ export const GameScreen: React.FC = () => {
     disabled: !gameLogicResult.gameState || gameLogicResult.gameState.gameStatus !== 'playing',
   });
 
+  // Extract values to avoid linting issues
+  const { isInitialized, initializeGame } = gameLogicResult;
+  
+  // Use ref to store clear function to avoid dependency issues
+  const clearCalculatorRef = useRef(calculatorResult.clear);
+  clearCalculatorRef.current = calculatorResult.clear;
+
   // Initialize game when screen becomes active
   useEffect(() => {
-    console.log('GameScreen useEffect - isInitialized:', gameLogicResult.isInitialized, 'gameState:', gameLogicResult.gameState, 'initializationStarted:', initializationStarted.current);
-    
-    if (!gameLogicResult.isInitialized && !initializationStarted.current) {
-      console.log('Starting game initialization sequence...');
+    if (!isInitialized && !initializationStarted.current) {
       initializationStarted.current = true;
       setGameStartVisible(true);
       setGameStarted(false);
       
-      // Show "GAME START" message for 2 seconds
-      const timer = setTimeout(() => {
-        console.log('Timer fired - calling initializeGame()');
+      // Show "GAME START" message for specified delay
+      const timer = createDelayedAction(() => {
         setGameStartVisible(false);
-        gameLogicResult.initializeGame();
+        clearCalculatorRef.current(); // Clear calculator state before initializing
+        initializeGame();
         setGameStarted(true);
         setGameInitialized(true);
-        console.log('Game initialization complete');
-      }, 2000);
+      }, setTransition, GAME_START_DELAY);
 
       return () => {
-        console.log('Cleanup timer');
         clearTimeout(timer);
       };
     }
-  }, [gameLogicResult.isInitialized]);
+  }, [isInitialized, initializeGame, setGameStartVisible, setGameStarted, setGameInitialized, setTransition]);
 
   // Game start message component
   const GameStartMessage: React.FC = () => (
@@ -106,18 +210,13 @@ export const GameScreen: React.FC = () => {
 
   // Game interface component
   const GameInterface: React.FC = () => {
-    console.log('GameInterface rendering - gameState exists:', !!gameLogicResult.gameState, 'isInitialized:', gameLogicResult.isInitialized);
-    
     if (!gameLogicResult.gameState) {
-      console.log('No game state, showing loading...');
       return (
         <div className="text-center">
           <div className="lcd-text">Loading game...</div>
         </div>
       );
     }
-
-    console.log('Game state exists, rendering game display with state:', gameLogicResult.gameState);
 
     // Create enhanced game state for display
     const enhancedGameState = {
@@ -132,7 +231,6 @@ export const GameScreen: React.FC = () => {
       enhancedGameState.lastResult = calculatorResult.lastResult;
     }
 
-    console.log('Enhanced game state for display:', enhancedGameState);
     return <GameDisplay gameState={enhancedGameState} />;
   };
 
@@ -147,6 +245,13 @@ export const GameScreen: React.FC = () => {
           if (handled) return true;
         }
         
+        // Check if we're in time-up display mode
+        if (gameLogicResult.gameState?.gameStatus === 'timeup' && gameLogicResult.gameState?.showTimeUpDisplay) {
+          // Route to time-up display navigation
+          const handled = gameLogicResult.handleTimeUpDisplayInput(buttonId);
+          if (handled) return true;
+        }
+        
         // Normal game button handling
         if (!gameLogicResult.gameState || gameLogicResult.gameState.gameStatus !== 'playing') return false;
         calculatorResult.handleButtonPress(buttonId);
@@ -154,6 +259,7 @@ export const GameScreen: React.FC = () => {
       },
       isGameActive: Boolean(!game.showGameStart && game.gameStarted && gameLogicResult.gameState && gameLogicResult.gameState.gameStatus === 'playing'),
       isWinDisplay: Boolean(gameLogicResult.gameState?.gameStatus === 'won' && gameLogicResult.gameState?.showWinDisplay),
+      isTimeUpDisplay: Boolean(gameLogicResult.gameState?.gameStatus === 'timeup' && gameLogicResult.gameState?.showTimeUpDisplay),
     };
 
     registerHandlers(handlers);
@@ -164,13 +270,9 @@ export const GameScreen: React.FC = () => {
   }, [calculatorResult, gameLogicResult, game.showGameStart, game.gameStarted, registerHandlers, unregisterHandlers]);
 
   // Render the appropriate game phase
-  console.log('GameScreen render decision - showGameStart:', game.showGameStart, 'gameStarted:', game.gameStarted, 'isInitialized:', game.isInitialized);
-  
   if (game.showGameStart) {
-    console.log('Rendering GameStartMessage');
     return <GameStartMessage />;
   }
 
-  console.log('Rendering GameInterface');
   return <GameInterface />;
 }; 
