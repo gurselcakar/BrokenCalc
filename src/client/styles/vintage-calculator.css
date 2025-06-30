@@ -234,6 +234,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   position: relative;
   transition: all 0.2s ease;
+  outline: none; /* Remove default focus outline */
 }
 
 /* Number Button Styles */
@@ -279,6 +280,30 @@
   pointer-events: none;
 }
 
+/* Button press feedback animation - only scale animation, no borders */
+@keyframes button-press {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.calc-button:active {
+  animation: button-press 0.1s ease-in-out;
+}
+
+/* Remove all focus borders and outlines */
+.calc-button:focus {
+  outline: none;
+  border: 2px solid var(--calc-btn-border); /* Keep original border */
+  box-shadow: 
+    0 4px 8px var(--calc-btn-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Keep original shadow */
+}
+
+.calc-button:focus-visible {
+  outline: none;
+}
+
 /* Retro Refresh Animation */
 @keyframes retro-refresh {
   0% { opacity: 1; }
@@ -298,22 +323,6 @@
 
 .welcome-animation {
   animation: welcome-fade 0.8s ease-out;
-}
-
-/* Button press feedback animation */
-@keyframes button-press {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.95); }
-  100% { transform: scale(1); }
-}
-
-.calc-button:active {
-  animation: button-press 0.1s ease-in-out;
-}
-
-.calc-button:focus {
-  outline: 2px solid var(--lcd-text-bright);
-  outline-offset: 2px;
 }
 
 /* Scrollable content styling - Enhanced for better visibility */
