@@ -209,7 +209,7 @@ export const useMenuNavigation = () => {
     }, 300);
   }, []);
 
-  // Handle back navigation - Fixed circular dependency
+  // Handle back navigation
   const handleBack = useCallback(() => {
     setState(prev => {
       const newHistory = [...screenHistoryRef.current];
@@ -232,7 +232,80 @@ export const useMenuNavigation = () => {
     setTimeout(() => {
       setState(prev => ({ ...prev, isTransitioning: false }));
     }, 300);
-  }, []); // Removed screenHistory dependency to fix infinite loop
+  }, []);
+
+  // NEW: Handle calculator button input for navigation
+  const handleCalculatorButtonInput = useCallback((buttonId: string) => {
+    if (state.isTransitioning) return;
+
+    console.log('Calculator button pressed for navigation:', buttonId, 'on screen:', state.currentScreen);
+
+    // Map calculator buttons to navigation actions
+    switch (buttonId) {
+      case 'subtract': // - button for UP navigation
+      case '8': // Alternative: 8 button for UP
+        handleNavigation('UP');
+        break;
+      
+      case 'add': // + button for DOWN navigation  
+      case '2': // Alternative: 2 button for DOWN
+        handleNavigation('DOWN');
+        break;
+      
+      case 'equals': // = button for SELECT
+      case '5': // Alternative: 5 button for SELECT (center)
+        handleSelect();
+        break;
+      
+      case 'delete': // Delete button for BACK
+      case '4': // Alternative: 4 button for BACK (left)
+        if (state.showBackButton) {
+          handleBack();
+        }
+        break;
+
+      // Number shortcuts for direct menu selection
+      case '1':
+        if (state.currentScreen === 'MAIN_MENU') {
+          setState(prev => ({ ...prev, selectedMenuOption: 'PLAY' }));
+          setTimeout(() => handleSelect(), 100);
+        }
+        break;
+      
+      case '3':
+        if (state.currentScreen === 'MAIN_MENU') {
+          setState(prev => ({ ...prev, selectedMenuOption: 'HOW TO PLAY' }));
+          setTimeout(() => handleSelect(), 100);
+        }
+        break;
+      
+      case '6':
+        if (state.currentScreen === 'MAIN_MENU') {
+          setState(prev => ({ ...prev, selectedMenuOption: 'LEADERBOARD' }));
+          setTimeout(() => handleSelect(), 100);
+        }
+        break;
+
+      // Difficulty shortcuts
+      case '7':
+        if (state.currentScreen === 'DIFFICULTY_SELECTION') {
+          setState(prev => ({ ...prev, selectedDifficulty: 'easy' }));
+          setTimeout(() => handleSelect(), 100);
+        }
+        break;
+      
+      case '9':
+        if (state.currentScreen === 'DIFFICULTY_SELECTION') {
+          setState(prev => ({ ...prev, selectedDifficulty: 'medium' }));
+          setTimeout(() => handleSelect(), 100);
+        }
+        break;
+
+      default:
+        console.log('Unmapped calculator button for navigation:', buttonId);
+        break;
+    }
+  }, [state.isTransitioning, state.showBackButton, state.currentScreen, handleNavigation, handleSelect, handleBack]);
 
   // Initialize welcome sequence
   const startWelcomeSequence = useCallback(() => {
@@ -258,10 +331,13 @@ export const useMenuNavigation = () => {
     }, 2500);
   }, []);
 
-  // Keyboard event handler - Fixed dependencies
+  // Keyboard event handler - Updated to work alongside calculator buttons
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (state.isTransitioning) return;
+
+      // Only handle keyboard events if we're not in game mode
+      if (state.currentScreen === 'GAME') return;
 
       switch (event.key) {
         case 'ArrowUp':
@@ -289,7 +365,7 @@ export const useMenuNavigation = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [state.isTransitioning, state.showBackButton, handleNavigation, handleSelect, handleBack]);
+  }, [state.isTransitioning, state.showBackButton, state.currentScreen, handleNavigation, handleSelect, handleBack]);
 
   // Set screen directly
   const setScreen = useCallback((screen: ScreenState) => {
@@ -321,6 +397,7 @@ export const useMenuNavigation = () => {
       scrollUp: () => scrollContent('UP'),
       scrollDown: () => scrollContent('DOWN'),
       setScreen,
+      handleCalculatorButtonInput, // NEW: Expose calculator button handler
     },
   };
 };

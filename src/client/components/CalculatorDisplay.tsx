@@ -39,7 +39,7 @@ export const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
         </div>
       </div>
 
-      {/* Calculator Buttons Area - Allow to expand and fill remaining space */}
+      {/* Calculator Buttons Area - Always visible, positioned below LCD */}
       {calculatorButtons && (
         <div className="calculator-buttons-area flex-1 flex flex-col p-4 pr-16 min-h-0">
           {calculatorButtons}

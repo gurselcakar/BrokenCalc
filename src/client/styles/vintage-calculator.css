@@ -46,6 +46,10 @@
   --calc-btn-action-bg: #059669;
   --calc-btn-action-hover: #10b981;
   --calc-btn-action-text: #ffffff;
+
+  /* Navigation mode highlighting */
+  --calc-btn-nav-highlight: #fbbf24;
+  --calc-btn-nav-glow: rgba(251, 191, 36, 0.3);
 }
 
 /* Calculator Display Container */
@@ -260,6 +264,29 @@
   box-shadow: 
     0 4px 8px var(--calc-btn-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* Navigation mode highlighting for key buttons */
+.calc-button.nav-highlight {
+  box-shadow: 
+    0 4px 8px var(--calc-btn-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 12px var(--calc-btn-nav-glow);
+}
+
+.calc-button.nav-highlight::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid var(--calc-btn-nav-highlight);
+  border-radius: inherit;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 /* Number Button Styles */
@@ -332,6 +359,11 @@
   outline-offset: 2px;
 }
 
+.calc-button:focus {
+  outline: 2px solid var(--calc-btn-nav-highlight);
+  outline-offset: 2px;
+}
+
 /* Scrollable content styling */
 .scrollable-container {
   overflow-y: auto;
@@ -400,4 +432,23 @@
   opacity: 0;
   transform: scale(0.95);
   transition: opacity 200ms ease-in, transform 200ms ease-in;
+}
+
+/* Calculator buttons area styling */
+.calculator-buttons-area {
+  background: var(--calc-body);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+/* Button press feedback animation */
+@keyframes button-press {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.calc-button:active {
+  animation: button-press 0.1s ease-in-out;
 }

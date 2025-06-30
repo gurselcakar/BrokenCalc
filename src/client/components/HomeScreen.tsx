@@ -54,8 +54,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     disabled: !gameLogicResult.gameState || gameLogicResult.gameState.gameStatus !== 'playing',
   });
 
-
-
   // Initialize welcome sequence on mount
   useEffect(() => {
     if (!welcomeInitialized.current) {
@@ -106,20 +104,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       </div>
       
       <div className="lcd-text lcd-text-small text-center mt-8">
-        Use ▲▼ to navigate
+        Use calculator buttons to navigate:
       </div>
       <div className="lcd-text lcd-text-small text-center">
-        Press OK to select
+        - (up) + (down) = (select) ⌫ (back)
+      </div>
+      <div className="lcd-text lcd-text-small text-center mt-4">
+        Or press 1, 3, 6 for direct access
       </div>
     </div>
   );
-
-
 
   // Handle button press during game
   const handleGameButtonPress = (buttonId: string) => {
     if (!gameLogicResult.gameState || gameLogicResult.gameState.gameStatus !== 'playing') return;
     calculatorResult.handleButtonPress(buttonId);
+  };
+
+  // NEW: Handle button press for navigation
+  const handleNavigationButtonPress = (buttonId: string) => {
+    console.log('Navigation button press:', buttonId);
+    actions.handleCalculatorButtonInput(buttonId);
   };
 
   // Game rendering functions
@@ -159,8 +164,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       enhancedGameState.lastResult = calculatorResult.lastResult;
     }
 
-
-
     return <GameDisplay gameState={enhancedGameState} />;
   };
 
@@ -173,27 +176,44 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
         return renderMainMenu();
       
       case 'DIFFICULTY_SELECTION':
-        return <DifficultySelection selectedDifficulty={state.selectedDifficulty} />;
+        return (
+          <div>
+            <DifficultySelection selectedDifficulty={state.selectedDifficulty} />
+            <div className="lcd-text lcd-text-small text-center mt-6">
+              Use - + = ⌫ or press 7, 9 for shortcuts
+            </div>
+          </div>
+        );
       
       case 'GAME':
         return showGameStart ? renderGameStartMessage() : renderGameInterface();
       
       case 'HOW_TO_PLAY':
         return (
-          <HowToPlay 
-            scrollPosition={state.scrollPosition}
-            maxScrollPosition={state.maxScrollPosition}
-            onSetScrollBounds={actions.setScrollBounds}
-          />
+          <div>
+            <HowToPlay 
+              scrollPosition={state.scrollPosition}
+              maxScrollPosition={state.maxScrollPosition}
+              onSetScrollBounds={actions.setScrollBounds}
+            />
+            <div className="lcd-text lcd-text-small text-center mt-4">
+              Use - + to scroll, ⌫ to go back
+            </div>
+          </div>
         );
       
       case 'LEADERBOARD':
         return (
-          <Leaderboard 
-            scrollPosition={state.scrollPosition}
-            maxScrollPosition={state.maxScrollPosition}
-            onSetScrollBounds={actions.setScrollBounds}
-          />
+          <div>
+            <Leaderboard 
+              scrollPosition={state.scrollPosition}
+              maxScrollPosition={state.maxScrollPosition}
+              onSetScrollBounds={actions.setScrollBounds}
+            />
+            <div className="lcd-text lcd-text-small text-center mt-4">
+              Use - + to scroll, ⌫ to go back
+            </div>
+          </div>
         );
       
       default:
@@ -201,19 +221,47 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     }
   };
 
-  // Render calculator buttons - always visible but disabled when no active game
+  // NEW: Conditional calculator button routing
   const renderCalculatorButtons = () => {
-    // Determine if buttons should be disabled
     const isGameActive = state.currentScreen === 'GAME' && 
                         !showGameStart && 
                         gameStarted && 
                         gameLogicResult.gameState && 
                         gameLogicResult.gameState.gameStatus === 'playing';
 
+    const isNavigationMode = state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME';
+
+    // Determine which handler to use
+    let buttonHandler: (buttonId: string) => void;
+    let disabled = false;
+
+    if (isGameActive) {
+      // Game mode: route to game logic
+      buttonHandler = handleGameButtonPress;
+      disabled = false;
+    } else if (isNavigationMode) {
+      // Navigation mode: route to navigation logic
+      buttonHandler = handleNavigationButtonPress;
+      disabled = state.isTransitioning;
+    } else {
+      // Disabled mode (welcome screen, game start message, etc.)
+      buttonHandler = () => {}; // No-op
+      disabled = true;
+    }
+
+    console.log('Calculator button mode:', {
+      currentScreen: state.currentScreen,
+      isGameActive,
+      isNavigationMode,
+      disabled,
+      showGameStart,
+      gameStarted
+    });
+
     return (
       <Calculator 
-        onButtonPress={handleGameButtonPress}
-        disabled={!isGameActive}
+        onButtonPress={buttonHandler}
+        disabled={disabled}
       />
     );
   };
@@ -225,7 +273,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     >
       {renderCurrentScreen()}
       
-      {/* Navigation Buttons - Hidden during welcome and game screens */}
+      {/* Traditional Navigation Buttons - Hidden during welcome and game screens, but kept for accessibility */}
       {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME' && (
         <MenuNavigation
           state={state}
