@@ -32,14 +32,14 @@ export const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
         </div>
       </div>
       
-      {/* LCD Display - Full width without right padding */}
-      <div className={`lcd-display ${isTransitioning ? 'retro-refresh' : ''} ${className} flex-shrink-0 h-56 p-4 mb-3 flex flex-col justify-start overflow-hidden`}>
-        <div className="h-full w-full overflow-y-auto scrollable-container">
+      {/* LCD Display - Only this area gets the retro-refresh animation */}
+      <div className={`lcd-display ${className} flex-shrink-0 h-56 p-4 mb-3 flex flex-col justify-start overflow-hidden`}>
+        <div className={`lcd-content ${isTransitioning ? 'retro-refresh' : ''} h-full w-full overflow-y-auto scrollable-container`}>
           {children}
         </div>
       </div>
 
-      {/* Calculator Buttons Area - Full width */}
+      {/* Calculator Buttons Area - No animation applied here */}
       {calculatorButtons && (
         <div className="calculator-buttons-area flex-1 flex flex-col p-4 min-h-0">
           {calculatorButtons}
