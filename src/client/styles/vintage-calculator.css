@@ -316,23 +316,39 @@
   outline-offset: 2px;
 }
 
-/* Scrollable content styling */
+/* Scrollable content styling - Enhanced for better visibility */
 .scrollable-container {
   overflow-y: auto;
   max-height: 100%;
-  padding-right: 4px;
-  margin-right: -4px;
+  width: 100%;
   scrollbar-width: thin;
-  scrollbar-color: var(--lcd-text-dim) transparent;
+  scrollbar-color: var(--lcd-text-dim) var(--lcd-bg);
 }
 
+/* Custom scrollbar for webkit browsers */
 .scrollable-container::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background: var(--lcd-bg);
+  border-radius: 4px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: var(--lcd-text-dim);
+  border-radius: 4px;
+  border: 1px solid var(--lcd-bg);
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: var(--lcd-text);
 }
 
 .scrollable-content {
   position: relative;
-  padding-bottom: 20px;
+  width: 100%;
+  padding-bottom: 8px;
 }
 
 /* Calculator buttons area styling */

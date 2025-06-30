@@ -32,16 +32,16 @@ export const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
         </div>
       </div>
       
-      {/* LCD Display - Fixed height for consistency across all screens */}
-      <div className={`lcd-display ${isTransitioning ? 'retro-refresh' : ''} ${className} flex-shrink-0 h-56 p-4 pr-16 mb-3 flex flex-col justify-start overflow-hidden`}>
-        <div className="h-full overflow-y-auto scrollable-container">
+      {/* LCD Display - Full width without right padding */}
+      <div className={`lcd-display ${isTransitioning ? 'retro-refresh' : ''} ${className} flex-shrink-0 h-56 p-4 mb-3 flex flex-col justify-start overflow-hidden`}>
+        <div className="h-full w-full overflow-y-auto scrollable-container">
           {children}
         </div>
       </div>
 
-      {/* Calculator Buttons Area - Always visible, positioned below LCD */}
+      {/* Calculator Buttons Area - Full width */}
       {calculatorButtons && (
-        <div className="calculator-buttons-area flex-1 flex flex-col p-4 pr-16 min-h-0">
+        <div className="calculator-buttons-area flex-1 flex flex-col p-4 min-h-0">
           {calculatorButtons}
         </div>
       )}

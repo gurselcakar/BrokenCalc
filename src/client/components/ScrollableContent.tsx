@@ -28,27 +28,12 @@ export const ScrollableContent: React.FC<ScrollableContentProps> = ({
         const contentHeight = contentRef.current.scrollHeight;
         const isOverflowing = contentHeight > containerHeight;
         
-        console.log('ScrollableContent overflow check:', {
-          containerHeight,
-          contentHeight,
-          isOverflowing,
-          maxScrollPosition
-        });
-        
-
-        
         // Calculate max scroll position and notify parent
         if (isOverflowing) {
           const lineHeight = 28;
           const totalLines = Math.ceil(contentHeight / lineHeight);
           const visibleLines = Math.floor(containerHeight / lineHeight);
           const maxScroll = Math.max(0, totalLines - visibleLines);
-          
-          console.log('Calculated scroll bounds:', {
-            totalLines,
-            visibleLines,
-            maxScroll
-          });
           
           onScrollBoundsChange?.(maxScroll);
         } else {
@@ -74,19 +59,10 @@ export const ScrollableContent: React.FC<ScrollableContentProps> = ({
   // Handle scroll positioning
   useEffect(() => {
     if (containerRef.current) {
-      const lineHeight = 28; // More accurate line height for LCD text
+      const lineHeight = 28;
       const scrollTop = scrollPosition * lineHeight;
       
-      console.log('Applying scroll:', {
-        scrollPosition,
-        lineHeight,
-        scrollTop,
-        maxScrollPosition,
-        containerHeight: containerRef.current.clientHeight,
-        containerScrollHeight: containerRef.current.scrollHeight
-      });
-      
-      // Apply scroll to container (which has overflow)
+      // Apply scroll to container
       containerRef.current.scrollTop = scrollTop;
     }
   }, [scrollPosition, maxScrollPosition]);
@@ -95,12 +71,10 @@ export const ScrollableContent: React.FC<ScrollableContentProps> = ({
     <div className={`scrollable-container ${className}`} ref={containerRef}>
       <div 
         ref={contentRef}
-        className="scrollable-content"
+        className="scrollable-content w-full"
       >
         {children}
       </div>
-      
-
     </div>
   );
-}; 
+};
