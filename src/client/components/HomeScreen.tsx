@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { CalculatorDisplay } from './CalculatorDisplay';
-import { MenuNavigation } from './MenuNavigation';
 import { WelcomeSequence } from './WelcomeSequence';
 import { DifficultySelection } from './DifficultySelection';
 import { HowToPlay } from './HowToPlay';
@@ -23,7 +22,7 @@ const MENU_LABELS: Record<MenuOption, string> = {
 };
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
-  const { state, inputMethod, actions } = useMenuNavigation();
+  const { state, actions } = useMenuNavigation();
   const [welcomeState, setWelcomeState] = useState<WelcomeState>({
     username: username || null,
     isVisible: true,
@@ -107,7 +106,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
         Use calculator buttons to navigate:
       </div>
       <div className="lcd-text lcd-text-small text-center">
-        - (up) + (down) = (select) ⌫ (back)
+        + (up) - (down) = (select) ⌫ (back)
       </div>
       <div className="lcd-text lcd-text-small text-center mt-4">
         Or press 1, 3, 6 for direct access
@@ -121,7 +120,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     calculatorResult.handleButtonPress(buttonId);
   };
 
-  // NEW: Handle button press for navigation
+  // Handle button press for navigation
   const handleNavigationButtonPress = (buttonId: string) => {
     console.log('Navigation button press:', buttonId);
     actions.handleCalculatorButtonInput(buttonId);
@@ -180,7 +179,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
           <div>
             <DifficultySelection selectedDifficulty={state.selectedDifficulty} />
             <div className="lcd-text lcd-text-small text-center mt-6">
-              Use - + = ⌫ or press 7, 9 for shortcuts
+              Use + - = ⌫ or press 7, 9 for shortcuts
             </div>
           </div>
         );
@@ -197,7 +196,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
               onSetScrollBounds={actions.setScrollBounds}
             />
             <div className="lcd-text lcd-text-small text-center mt-4">
-              Use - + to scroll, ⌫ to go back
+              Use + - to scroll, ⌫ to go back
             </div>
           </div>
         );
@@ -211,7 +210,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
               onSetScrollBounds={actions.setScrollBounds}
             />
             <div className="lcd-text lcd-text-small text-center mt-4">
-              Use - + to scroll, ⌫ to go back
+              Use + - to scroll, ⌫ to go back
             </div>
           </div>
         );
@@ -221,7 +220,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
     }
   };
 
-  // NEW: Conditional calculator button routing
+  // Conditional calculator button routing
   const renderCalculatorButtons = () => {
     const isGameActive = state.currentScreen === 'GAME' && 
                         !showGameStart && 
@@ -249,15 +248,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       disabled = true;
     }
 
-    console.log('Calculator button mode:', {
-      currentScreen: state.currentScreen,
-      isGameActive,
-      isNavigationMode,
-      disabled,
-      showGameStart,
-      gameStarted
-    });
-
     return (
       <Calculator 
         onButtonPress={buttonHandler}
@@ -272,18 +262,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ username }) => {
       calculatorButtons={renderCalculatorButtons()}
     >
       {renderCurrentScreen()}
-      
-      {/* Traditional Navigation Buttons - Hidden during welcome and game screens, but kept for accessibility */}
-      {state.currentScreen !== 'WELCOME' && state.currentScreen !== 'GAME' && (
-        <MenuNavigation
-          state={state}
-          inputMethod={inputMethod}
-          onNavigateUp={actions.navigateUp}
-          onNavigateDown={actions.navigateDown}
-          onSelect={actions.select}
-          onBack={actions.back}
-        />
-      )}
     </CalculatorDisplay>
   );
 };

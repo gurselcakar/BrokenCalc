@@ -7,29 +7,29 @@ interface CalculatorProps {
   className?: string;
 }
 
-// Define the 5x4 calculator layout
+// Define the 5x4 calculator layout with + above - for better navigation
 const CALCULATOR_BUTTONS: CalculatorButton[] = [
   // Row 1: Delete (spans 3 cells) + Divide
   { id: 'delete', displayLabel: '⌫', actualValue: 'delete', type: 'action', gridPosition: { row: 0, col: 0, span: 3 } },
   { id: 'divide', displayLabel: '÷', actualValue: '÷', type: 'operator', gridPosition: { row: 0, col: 3 } },
   
-  // Row 2: 7, 8, 9, Multiply
+  // Row 2: 7, 8, 9, Add (moved + up for better navigation)
   { id: '7', displayLabel: '7', actualValue: '7', type: 'number', gridPosition: { row: 1, col: 0 } },
   { id: '8', displayLabel: '8', actualValue: '8', type: 'number', gridPosition: { row: 1, col: 1 } },
   { id: '9', displayLabel: '9', actualValue: '9', type: 'number', gridPosition: { row: 1, col: 2 } },
-  { id: 'multiply', displayLabel: '×', actualValue: '×', type: 'operator', gridPosition: { row: 1, col: 3 } },
+  { id: 'add', displayLabel: '+', actualValue: '+', type: 'operator', gridPosition: { row: 1, col: 3 } },
   
-  // Row 3: 4, 5, 6, Subtract
+  // Row 3: 4, 5, 6, Subtract (moved - down for better navigation)
   { id: '4', displayLabel: '4', actualValue: '4', type: 'number', gridPosition: { row: 2, col: 0 } },
   { id: '5', displayLabel: '5', actualValue: '5', type: 'number', gridPosition: { row: 2, col: 1 } },
   { id: '6', displayLabel: '6', actualValue: '6', type: 'number', gridPosition: { row: 2, col: 2 } },
   { id: 'subtract', displayLabel: '-', actualValue: '-', type: 'operator', gridPosition: { row: 2, col: 3 } },
   
-  // Row 4: 1, 2, 3, Add
+  // Row 4: 1, 2, 3, Multiply
   { id: '1', displayLabel: '1', actualValue: '1', type: 'number', gridPosition: { row: 3, col: 0 } },
   { id: '2', displayLabel: '2', actualValue: '2', type: 'number', gridPosition: { row: 3, col: 1 } },
   { id: '3', displayLabel: '3', actualValue: '3', type: 'number', gridPosition: { row: 3, col: 2 } },
-  { id: 'add', displayLabel: '+', actualValue: '+', type: 'operator', gridPosition: { row: 3, col: 3 } },
+  { id: 'multiply', displayLabel: '×', actualValue: '×', type: 'operator', gridPosition: { row: 3, col: 3 } },
   
   // Row 5: Empty, 0, Empty, Equals
   { id: '0', displayLabel: '0', actualValue: '0', type: 'number', gridPosition: { row: 4, col: 1 } },

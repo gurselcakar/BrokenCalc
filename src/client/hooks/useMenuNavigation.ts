@@ -134,20 +134,9 @@ export const useMenuNavigation = () => {
     const isScrollableScreen = hasScrollableContent(state.currentScreen);
     const hasScroll = state.maxScrollPosition > 0;
     
-    console.log('Navigation attempt:', {
-      direction,
-      currentScreen: state.currentScreen,
-      isScrollableScreen,
-      maxScrollPosition: state.maxScrollPosition,
-      hasScroll,
-      willScroll: isScrollableScreen && hasScroll
-    });
-    
     if (isScrollableScreen && hasScroll) {
-      console.log('Using scroll navigation');
       scrollContent(direction);
     } else {
-      console.log('Using menu navigation');
       navigateMenu(direction);
     }
   }, [state.currentScreen, state.maxScrollPosition, scrollContent, navigateMenu, hasScrollableContent]);
@@ -234,20 +223,20 @@ export const useMenuNavigation = () => {
     }, 300);
   }, []);
 
-  // NEW: Handle calculator button input for navigation
+  // Handle calculator button input for navigation
   const handleCalculatorButtonInput = useCallback((buttonId: string) => {
     if (state.isTransitioning) return;
 
     console.log('Calculator button pressed for navigation:', buttonId, 'on screen:', state.currentScreen);
 
-    // Map calculator buttons to navigation actions
+    // Map calculator buttons to navigation actions (updated for new layout)
     switch (buttonId) {
-      case 'subtract': // - button for UP navigation
+      case 'add': // + button for UP navigation (now above -)
       case '8': // Alternative: 8 button for UP
         handleNavigation('UP');
         break;
       
-      case 'add': // + button for DOWN navigation  
+      case 'subtract': // - button for DOWN navigation (now below +)
       case '2': // Alternative: 2 button for DOWN
         handleNavigation('DOWN');
         break;
@@ -397,7 +386,7 @@ export const useMenuNavigation = () => {
       scrollUp: () => scrollContent('UP'),
       scrollDown: () => scrollContent('DOWN'),
       setScreen,
-      handleCalculatorButtonInput, // NEW: Expose calculator button handler
+      handleCalculatorButtonInput,
     },
   };
 };
